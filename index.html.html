@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Quotes</title>
+<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 30px 16px; }
+  .container { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 780px; margin: 0 auto; overflow: hidden; }
+  .header { background: #1a2f6e; color: white; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; }
+  .header p { opacity: 0.85; font-size: 0.9rem; margin-top: 4px; }
+  .body { padding: 28px; }
+  .btn-signin { background: #1a2f6e; color: white; padding: 10px 20px; border-radius: 8px; font-size: 1rem; border: none; cursor: pointer; margin-top: 12px; }
+  .btn-signout { background: rgba(255,255,255,0.2); color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; border: none; cursor: pointer; }
+  .msg { padding: 14px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 16px; }
+  .msg.error { background: #fee2e2; color: #dc2626; }
+  .msg.info { background: #eff6ff; color: #1e40af; }
+
+  /* Admin styles */
+  .admin-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .admin-table th { text-align: left; padding: 10px 12px; font-size: 0.8rem; color: #6b7280; border-bottom: 2px solid #e5e7eb; text-transform: uppercase; letter-spacing: 0.05em; }
+  .admin-table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; vertical-align: middle; }
+  .admin-table tr:hover td { background: #f9fafb; }
+  .copy-btn { background: #1a2f6e; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+  .copy-btn.copied { background: #10b981; }
+  .job-count { background: #e5e7eb; color: #374151; border-radius: 20px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
+  .search-box { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+  .search-box:focus { outline: none; border-color: #1a2f6e; }
+  .section-title { font-size: 1rem; font-weight: 600; color: #111; margin-bottom: 12px; }
+
+  /* Customer view styles */
+  .jobs { display: flex; flex-direction: column; gap: 14px; }
+  .job-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .job-card.won { border-color: #10b981; background: #f0fdf4; }
+  .job-card.lost { border-color: #ef4444; background: #fef2f2; }
+  .job-card.unknown { border-color: #f59e0b; background: #fffbeb; }
+  .job-name { font-weight: 600; font-size: 0.97rem; color: #111; }
+  .job-meta { font-size: 0.85rem; color: #6b7280; margin-top: 3px; }
+  .badge { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
+  .badge.won { background: #d1fae5; color: #065f46; }
+  .badge.lost { background: #fee2e2; color: #991b1b; }
+  .badge.pending { background: #e5e7eb; color: #374151; }
+  .badge.unknown { background: #fef3c7; color: #92400e; }
+  .btn-group { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+  .btn-won { background: #10b981; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .btn-lost { background: #ef4444; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .btn-unknown { background: #f59e0b; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .customer-name-header { font-size: 1.1rem; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .customer-name-sub { font-size: 0.9rem; color: #6b7280; margin-bottom: 20px; }
+  textarea { width: 100%; padding: 8px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; margin-top: 10px; }
+  textarea:focus { outline: none; border-color: #1a2f6e; }
+  .btn-comment { margin-top: 4px; padding: 5px 12px; background: #6b7280; color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>Customer Quotes</h1>
+      <p id="headerSub">Brookstone Industries</p>
+    </div>
+    <button class="btn-signout" id="signoutBtn" style="display:none" onclick="signOut()">Sign Out</button>
+  </div>
+  <div class="body" id="mainBody">
+    <div id="status" class="msg info">Loading...</div>
+  </div>
+</div>
+
+<script>
+const CLIENT_ID = '02bde808-c0cd-47bc-90e7-98a844b5ed86';
+const FILE_NAME = 'Customer Quotes.xlsx';
+const APP_URL = 'https://quoteupdate.netlify.app';
+
+const COL_CUSTOMER = 'Brookstone Contractors';
+const COL_JOB = 'Name';
+const COL_AMOUNT = 'Total';
+const COL_STATUS = 'Status';
+const COL_COMMENT = 'Comment';
+const COL_ID = 'CustomerID';
+const COL_UPDATED = 'Last Updated';
+
+const msalConfig = {
+  auth: {
+    clientId: CLIENT_ID,
+    authority: 'https://login.microsoftonline.com/common',
+    redirectUri: APP_URL
+  }
+};
+
+const msalInstance = new msal.PublicClientApplication(msalConfig);
+const scopes = ['Files.ReadWrite', 'User.Read'];
+
+let fileId = null;
+let allRows = [];
+let headers = [];
+let firstSheetName = '';
+
+const params = new URLSearchParams(window.location.search);
+const isAdmin = params.get('admin') === 'true';
+const customerId = params.get('id');
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  if (!msg) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.textContent = msg;
+  el.className = 'msg ' + (type || 'info');
+}
+
+function generateId(name) {
+  const clean = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+  const rand = Math.random().toString(36).substring(2, 5).toUpperCase();
+  return clean + rand;
+}
+
+async function apiCall(url, options = {}) {
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) throw new Error('Not signed in');
+  let token;
+  try {
+    const result = await msalInstance.acquireTokenSilent({ scopes, account: accounts[0], forceRefresh: true });
+    token = result.accessToken;
+  } catch(e) {
+    const result = await msalInstance.acquireTokenSilent({ scopes, account: accounts[0] });
+    token = result.accessToken;
+  }
+  const res = await fetch('https://graph.microsoft.com/v1.0' + url, {
+    ...options,
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(options.headers || {}) }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'API error ' + res.status);
+  }
+  return res.json();
+}
+
+async function loadExcel() {
+  showStatus('Connecting to OneDrive...', 'info');
+  const search = await apiCall(`/me/drive/root/search(q='Customer Quotes')?$select=id,name`);
+  const file = search.value.find(f => f.name.toLowerCase().includes('customer quotes'));
+  if (!file) throw new Error('Could not find Customer Quotes.xlsx on OneDrive.');
+  fileId = file.id;
+
+  showStatus('Loading data...', 'info');
+  const sheetsData = await apiCall(`/me/drive/items/${fileId}/workbook/worksheets`);
+  firstSheetName = sheetsData.value[0].name;
+
+  const range = await apiCall(`/me/drive/items/${fileId}/workbook/worksheets/${encodeURIComponent(firstSheetName)}/range(address='A1:G300')`);
+  const values = range.values;
+  if (!values || values.length < 2) throw new Error('No data found in sheet.');
+
+  headers = values[0];
+  allRows = values.slice(1).map((row, i) => {
+    const obj = { _row: i + 2 };
+    headers.forEach((h, j) => obj[h] = row[j]);
+    return obj;
+  }).filter(r => r[COL_CUSTOMER]);
+}
+
+async function updateCell(rowNum, colName, value) {
+  const colIdx = headers.indexOf(colName);
+  if (colIdx === -1) throw new Error(`Column "${colName}" not found. Headers: ${headers.join(', ')}`);
+  const colLetter = colIdx < 26 ? String.fromCharCode(65 + colIdx) : 'A' + String.fromCharCode(65 + colIdx - 26);
+  await apiCall(`/me/drive/items/${fileId}/workbook/worksheets/${encodeURIComponent(firstSheetName)}/range(address='${colLetter}${rowNum}')`, {
+    method: 'PATCH', body: JSON.stringify({ values: [[value]] })
+  });
+}
+
+// ADMIN VIEW
+async function initAdmin() {
+  document.getElementById('headerSub').textContent = 'Admin Dashboard';
+  document.getElementById('signoutBtn').style.display = 'block';
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) { renderSignIn(); return; }
+
+  showStatus('Loading...', 'info');
+  try {
+    await loadExcel();
+
+    if (!headers.includes(COL_ID)) {
+      const colLetter = String.fromCharCode(65 + headers.length);
+      await apiCall(`/me/drive/items/${fileId}/workbook/worksheets/${encodeURIComponent(firstSheetName)}/range(address='${colLetter}1')`, {
+        method: 'PATCH', body: JSON.stringify({ values: [[COL_ID]] })
+      });
+      headers.push(COL_ID);
+    }
+
+    const customerMap = {};
+    allRows.forEach(r => {
+      const name = r[COL_CUSTOMER];
+      if (!customerMap[name]) customerMap[name] = r[COL_ID] || null;
+    });
+
+    for (const [name, id] of Object.entries(customerMap)) {
+      if (!id) {
+        const newId = generateId(name);
+        customerMap[name] = newId;
+        const rows = allRows.filter(r => r[COL_CUSTOMER] === name);
+        for (const r of rows) {
+          await updateCell(r._row, COL_ID, newId);
+          r[COL_ID] = newId;
+        }
+      }
+    }
+
+    renderAdminDashboard(customerMap);
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+}
+
+function renderSignIn() {
+  document.getElementById('mainBody').innerHTML = `
+    <div class="msg info">Please sign in with your Microsoft account to access the admin dashboard.</div>
+    <button class="btn-signin" onclick="adminSignIn()">Sign in with Microsoft</button>
+  `;
+}
+
+async function adminSignIn() {
+  try { await msalInstance.loginRedirect({ scopes }); }
+  catch(e) { showStatus('Sign in failed: ' + e.message, 'error'); }
+}
+
+function signOut() { msalInstance.logoutRedirect(); }
+
+function renderAdminDashboard(customerMap) {
+  showStatus('', '');
+  const customers = Object.entries(customerMap).sort((a, b) => a[0].localeCompare(b[0]));
+  document.getElementById('mainBody').innerHTML = `
+    <div class="section-title">All Customers (${customers.length})</div>
+    <input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">
+    <table class="admin-table" id="adminTable">
+      <thead>
+        <tr>
+          <th>Customer Name</th>
+          <th>Jobs</th>
+          <th>Won</th>
+          <th>Lost</th>
+          <th>Unknown</th>
+          <th>Last Updated</th>
+          <th>Unique Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${customers.map(([name, id]) => {
+          const jobs = allRows.filter(r => r[COL_CUSTOMER] === name);
+          const won = jobs.filter(r => String(r[COL_STATUS]).toLowerCase() === 'won').length;
+          const lost = jobs.filter(r => String(r[COL_STATUS]).toLowerCase() === 'lost').length;
+          const unknown = jobs.filter(r => String(r[COL_STATUS]).toLowerCase() === 'unknown').length;
+          const hasComment = jobs.some(r => r[COL_COMMENT] && String(r[COL_COMMENT]).trim() !== '');
+          const lastUpdated = jobs.map(r => r[COL_UPDATED]).filter(Boolean).sort().reverse()[0] || '';
+          const link = `${APP_URL}?id=${id}`;
+          return `<tr>
+            <td><strong>${name}</strong>${hasComment ? ' <span style="background:#fef3c7;color:#92400e;font-size:0.7rem;font-weight:600;padding:2px 6px;border-radius:10px;margin-left:6px">Comment</span>' : ''}</td>
+            <td><span class="job-count">${jobs.length}</span></td>
+            <td style="color:#065f46;font-weight:600">${won}</td>
+            <td style="color:#991b1b;font-weight:600">${lost}</td>
+            <td style="color:#92400e;font-weight:600">${unknown}</td>
+            <td style="font-size:0.8rem;color:#6b7280">${lastUpdated || '—'}</td>
+            <td><button class="copy-btn" id="btn-${id}" onclick="copyLink('${link}','${id}')">Copy Link</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function filterTable(query) {
+  document.querySelectorAll('#adminTable tbody tr').forEach(row => {
+    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function copyLink(link, id) {
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('btn-' + id);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// CUSTOMER VIEW
+async function initCustomer(id) {
+  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) {
+    try { await msalInstance.ssoSilent({ scopes }); }
+    catch { await msalInstance.loginRedirect({ scopes }); return; }
+  }
+  showStatus('Loading your quotes...', 'info');
+  try {
+    await loadExcel();
+    const jobs = allRows.filter(r => r[COL_ID] === id);
+    if (!jobs.length) { showStatus('No quotes found for this link. Please contact Brookstone Industries.', 'error'); return; }
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
+  } catch(e) {
+    showStatus('Error loading quotes: ' + e.message, 'error');
+  }
+}
+
+function renderCustomerView(name, jobs) {
+  showStatus('', '');
+  document.getElementById('mainBody').innerHTML = `
+    <div class="customer-name-header">${name}</div>
+    <div class="customer-name-sub">Here are your current quoted jobs. Click Won, Lost, or Unknown to update each one.</div>
+    <div style="margin-bottom:16px;display:flex;gap:10px;">
+      <button onclick="window.print()" style="padding:7px 16px;background:#1a2f6e;color:white;border:none;border-radius:7px;font-size:0.85rem;font-weight:600;cursor:pointer">Print</button>
+      <button onclick="downloadCSV('${name}')" style="padding:7px 16px;background:#6b7280;color:white;border:none;border-radius:7px;font-size:0.85rem;font-weight:600;cursor:pointer">Download CSV</button>
+    </div>
+    <div class="jobs">
+      ${jobs.map(r => {
+        const job = r[COL_JOB] || 'Unnamed Job';
+        const amount = r[COL_AMOUNT];
+        const status = String(r[COL_STATUS] || '').toLowerCase();
+        const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
+        const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+        const comment = r[COL_COMMENT] || '';
+        return `<div class="job-card ${isWon?'won':isLost?'lost':isUnknown?'unknown':''}" id="card-${r._row}">
+          <div style="flex:1;min-width:0">
+            <div class="job-name">${job}</div>
+            <div class="job-meta">${amtStr}</div>
+            <span class="badge ${isWon?'won':isLost?'lost':isUnknown?'unknown':'pending'}" id="badge-${r._row}">${isWon?'Won':isLost?'Lost':isUnknown?'Unknown':'Pending'}</span>
+            <div id="saving-${r._row}" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>
+            <textarea id="comment-${r._row}" placeholder="Leave a comment...">${comment}</textarea>
+            <button class="btn-comment" onclick="saveComment(${r._row})">Save Comment</button>
+            <span id="comment-saved-${r._row}" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>
+            <div id="comment-error-${r._row}" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn-won" ${isWon?'disabled':''} onclick="setStatus(${r._row},'Won')">Won</button>
+            <button class="btn-lost" ${isLost?'disabled':''} onclick="setStatus(${r._row},'Lost')">Lost</button>
+            <button class="btn-unknown" ${isUnknown?'disabled':''} onclick="setStatus(${r._row},'Unknown')">Unknown</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function downloadCSV(customerName) {
+  const jobs = allRows.filter(r => r[COL_ID] === customerId);
+  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
+  jobs.forEach(r => {
+    rows.push([
+      r[COL_JOB] || '',
+      r[COL_AMOUNT] ? '
+  const text = document.getElementById('comment-' + rowNum).value;
+  const savedEl = document.getElementById('comment-saved-' + rowNum);
+  const errorEl = document.getElementById('comment-error-' + rowNum);
+  errorEl.style.display = 'none';
+  try {
+    await updateCell(rowNum, COL_COMMENT, text);
+    const idx = allRows.findIndex(r => r._row === rowNum);
+    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+    savedEl.style.display = 'inline';
+    setTimeout(() => savedEl.style.display = 'none', 2000);
+  } catch(e) {
+    errorEl.textContent = e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+async function setStatus(rowNum, status) {
+  const card = document.getElementById('card-' + rowNum);
+  const badge = document.getElementById('badge-' + rowNum);
+  const saving = document.getElementById('saving-' + rowNum);
+  const btns = card.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  saving.style.display = 'block';
+  saving.textContent = 'Saving...';
+  saving.style.color = '#6b7280';
+  try {
+    await updateCell(rowNum, COL_STATUS, status);
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    await updateCell(rowNum, COL_UPDATED, now);
+    const idx = allRows.findIndex(r => r._row === rowNum);
+    if (idx !== -1) allRows[idx][COL_STATUS] = status;
+    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    card.className = 'job-card ' + status.toLowerCase();
+    badge.className = 'badge ' + status.toLowerCase();
+    badge.textContent = status;
+    saving.style.display = 'none';
+    btns[0].disabled = isWon;
+    btns[1].disabled = isLost;
+    btns[2].disabled = isUnknown;
+  } catch(e) {
+    saving.textContent = 'Save failed: ' + e.message;
+    saving.style.color = '#dc2626';
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+// INIT
+window.addEventListener('load', async () => {
+  try {
+    await msalInstance.handleRedirectPromise();
+    if (isAdmin) await initAdmin();
+    else if (customerId) await initCustomer(customerId);
+    else window.location.href = APP_URL + '?admin=true';
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+});
+</script>
+</body>
+</html>
+ + Number(r[COL_AMOUNT]).toLocaleString() : '',
+      r[COL_STATUS] || 'Pending',
+      r[COL_UPDATED] || '',
+      r[COL_COMMENT] || ''
+    ]);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
+  a.click();
+}
+
+async function saveComment(rowNum) {
+  const text = document.getElementById('comment-' + rowNum).value;
+  const savedEl = document.getElementById('comment-saved-' + rowNum);
+  const errorEl = document.getElementById('comment-error-' + rowNum);
+  errorEl.style.display = 'none';
+  try {
+    await updateCell(rowNum, COL_COMMENT, text);
+    const idx = allRows.findIndex(r => r._row === rowNum);
+    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+    savedEl.style.display = 'inline';
+    setTimeout(() => savedEl.style.display = 'none', 2000);
+  } catch(e) {
+    errorEl.textContent = e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+async function setStatus(rowNum, status) {
+  const card = document.getElementById('card-' + rowNum);
+  const badge = document.getElementById('badge-' + rowNum);
+  const saving = document.getElementById('saving-' + rowNum);
+  const btns = card.querySelectorAll('button');
+  btns.forEach(b => b.disabled = true);
+  saving.style.display = 'block';
+  saving.textContent = 'Saving...';
+  saving.style.color = '#6b7280';
+  try {
+    await updateCell(rowNum, COL_STATUS, status);
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    await updateCell(rowNum, COL_UPDATED, now);
+    const idx = allRows.findIndex(r => r._row === rowNum);
+    if (idx !== -1) allRows[idx][COL_STATUS] = status;
+    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    card.className = 'job-card ' + status.toLowerCase();
+    badge.className = 'badge ' + status.toLowerCase();
+    badge.textContent = status;
+    saving.style.display = 'none';
+    btns[0].disabled = isWon;
+    btns[1].disabled = isLost;
+    btns[2].disabled = isUnknown;
+  } catch(e) {
+    saving.textContent = 'Save failed: ' + e.message;
+    saving.style.color = '#dc2626';
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+// INIT
+window.addEventListener('load', async () => {
+  try {
+    await msalInstance.handleRedirectPromise();
+    if (isAdmin) await initAdmin();
+    else if (customerId) await initCustomer(customerId);
+    else window.location.href = APP_URL + '?admin=true';
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+});
+</script>
+</body>
+</html>
