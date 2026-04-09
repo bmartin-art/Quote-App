@@ -28,6 +28,24 @@
   .search-box { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
   .search-box:focus { outline: none; border-color: #1a2f6e; }
   .section-title { font-size: 1rem; font-weight: 600; color: #111; margin-bottom: 12px; }
+  .tabs { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 20px; }
+  .tab { padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #6b7280; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .tab.active { color: #1a2f6e; border-bottom-color: #1a2f6e; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: #f9fafb; border-radius: 10px; padding: 16px; text-align: center; border: 1.5px solid #e5e7eb; }
+  .stat-card .stat-num { font-size: 2rem; font-weight: 700; color: #1a2f6e; }
+  .stat-card .stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+  .stat-card.won .stat-num { color: #10b981; }
+  .stat-card.lost .stat-num { color: #ef4444; }
+  .stat-card.unknown .stat-num { color: #f59e0b; }
+  .bar-wrap { margin-bottom: 24px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 0.82rem; color: #6b7280; margin-bottom: 4px; }
+  .bar-track { background: #e5e7eb; border-radius: 99px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+  .customer-stat-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+  .customer-stat-name { font-size: 0.9rem; font-weight: 600; color: #111; min-width: 160px; }
+  .mini-bar-track { flex: 1; background: #e5e7eb; border-radius: 99px; height: 10px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 99px; background: #10b981; }
   .jobs { display: flex; flex-direction: column; gap: 14px; }
   .job-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   .job-card.won { border-color: #10b981; background: #f0fdf4; }
@@ -148,7 +166,7 @@ async function loadExcel() {
   fileId = file.id;
   showStatus('Loading data...', 'info');
   const sheetsData = await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets');
-  firstSheetName = sheetsData.value[0].name;
+  firstSheetName = 'Active';
   const range = await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/' + encodeURIComponent(firstSheetName) + '/range(address=\'A1:G300\')');
   const values = range.values;
   if (!values || values.length < 2) throw new Error('No data found in sheet.');
@@ -224,6 +242,19 @@ function signOut() { msalInstance.logoutRedirect(); }
 function renderAdminDashboard(customerMap) {
   showStatus('', '');
   const customers = Object.keys(customerMap).sort().map(function(name) { return [name, customerMap[name]]; });
+
+  // Calculate stats
+  const totalJobs = allRows.length;
+  const totalWon = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
+  const totalLost = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).length;
+  const totalUnknown = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'unknown'; }).length;
+  const totalPending = totalJobs - totalWon - totalLost - totalUnknown;
+  const winRate = totalJobs > 0 ? Math.round((totalWon / (totalWon + totalLost)) * 100) || 0 : 0;
+  const valueWon = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
+  const valueLost = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
+  const valueTotal = allRows.reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
+
+  // Customer rows
   let rows = '';
   customers.forEach(function(pair) {
     const name = pair[0], id = pair[1];
@@ -245,13 +276,544 @@ function renderAdminDashboard(customerMap) {
       '<td><button class="copy-btn" id="btn-' + id + '" onclick="copyLink(\'' + link + '\',\'' + id + '\')">Copy Link</button></td>' +
       '</tr>';
   });
+
+  // Customer analytics rows
+  let analyticsRows = '';
+  customers.forEach(function(pair) {
+    const name = pair[0];
+    const jobs = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
+    const won = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
+    const total = jobs.length;
+    const pct = total > 0 ? Math.round((won / total) * 100) : 0;
+    analyticsRows += '<div class="customer-stat-row">' +
+      '<div class="customer-stat-name">' + name + '</div>' +
+      '<div style="display:flex;gap:6px;font-size:0.75rem;color:#6b7280;min-width:80px">' +
+        '<span style="color:#10b981;font-weight:600">' + won + 'W</span> / ' +
+        '<span style="color:#ef4444;font-weight:600">' + jobs.filter(function(r){return String(r[COL_STATUS]).toLowerCase()==='lost';}).length + 'L</span> / ' +
+        '<span>' + total + ' total</span>' +
+      '</div>' +
+      '<div class="mini-bar-track"><div class="mini-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<div style="font-size:0.8rem;font-weight:600;color:#1a2f6e;min-width:36px;text-align:right">' + pct + '%</div>' +
+    '</div>';
+  });
+
   document.getElementById('mainBody').innerHTML =
-    '<div class="section-title">All Customers (' + customers.length + ')</div>' +
-    '<input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">' +
-    '<table class="admin-table" id="adminTable">' +
-      '<thead><tr><th>Customer</th><th>Jobs</th><th>Won</th><th>Lost</th><th>Unknown</th><th>Last Updated</th><th>Link</th></tr></thead>' +
-      '<tbody>' + rows + '</tbody>' +
-    '</table>';
+    '<div class="tabs">' +
+      '<div class="tab active" id="tab-customers" onclick="switchTab(\'customers\')">Customers</div>' +
+      '<div class="tab" id="tab-analytics" onclick="switchTab(\'analytics\')">Analytics</div>' +
+    '</div>' +
+
+    // CUSTOMERS TAB
+    '<div id="panel-customers">' +
+      '<div class="section-title">All Customers (' + customers.length + ')</div>' +
+      '<input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">' +
+      '<table class="admin-table" id="adminTable">' +
+        '<thead><tr><th>Customer</th><th>Jobs</th><th>Won</th><th>Lost</th><th>Unknown</th><th>Last Updated</th><th>Link</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>' +
+    '</div>' +
+
+    // ANALYTICS TAB
+    '<div id="panel-analytics" style="display:none">' +
+      '<div class="section-title" style="margin-bottom:16px">Overall Summary</div>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-card won"><div class="stat-num">' + totalWon + '</div><div class="stat-label">Won</div></div>' +
+        '<div class="stat-card lost"><div class="stat-num">' + totalLost + '</div><div class="stat-label">Lost</div></div>' +
+        '<div class="stat-card unknown"><div class="stat-num">' + totalUnknown + '</div><div class="stat-label">Unknown</div></div>' +
+        '<div class="stat-card"><div class="stat-num">' + totalPending + '</div><div class="stat-label">Pending</div></div>' +
+        '<div class="stat-card"><div class="stat-num">' + winRate + '%</div><div class="stat-label">Win Rate</div></div>' +
+        '<div class="stat-card"><div class="stat-num">' + totalJobs + '</div><div class="stat-label">Total Jobs</div></div>' +
+      '</div>' +
+
+      '<div class="section-title" style="margin-bottom:12px">Job Value</div>' +
+      '<div class="stat-grid" style="margin-bottom:24px">' +
+        '<div class="stat-card won"><div class="stat-num">
+
+function filterTable(query) {
+  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
+    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function copyLink(link, id) {
+  navigator.clipboard.writeText(link).then(function() {
+    const btn = document.getElementById('btn-' + id);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// CUSTOMER
+async function initCustomer(id) {
+  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) {
+    try { await msalInstance.ssoSilent({ scopes }); }
+    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
+  }
+  showStatus('Loading your quotes...', 'info');
+  try {
+    await loadExcel();
+    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
+    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+}
+
+function renderCustomerView(name, jobs) {
+  showStatus('', '');
+  let cards = '';
+  jobs.forEach(function(r) {
+    const job = r[COL_JOB] || 'Unnamed Job';
+    const amount = r[COL_AMOUNT];
+    const status = String(r[COL_STATUS] || '').toLowerCase();
+    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
+    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+    const comment = r[COL_COMMENT] || '';
+    cards +=
+      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="job-name">' + job + '</div>' +
+          '<div class="job-meta">' + amtStr + '</div>' +
+          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
+          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
+          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
+          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
+          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
+          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
+        '</div>' +
+        '<div class="btn-group">' +
+          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
+          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
+          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('mainBody').innerHTML =
+    '<div class="customer-name-header">' + name + '</div>' +
+    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
+    '<div class="action-btns">' +
+      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
+      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
+    '</div>' +
+    '<div class="jobs">' + cards + '</div>';
+}
+
+function downloadCSV(customerName) {
+  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
+  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
+  jobs.forEach(function(r) {
+    rows.push([
+      r[COL_JOB] || '',
+      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
+      r[COL_STATUS] || 'Pending',
+      r[COL_UPDATED] || '',
+      r[COL_COMMENT] || ''
+    ]);
+  });
+  const csv = rows.map(function(r) {
+    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  }).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
+  a.click();
+}
+
+async function saveComment(rowNum) {
+  const text = document.getElementById('comment-' + rowNum).value;
+  const savedEl = document.getElementById('comment-saved-' + rowNum);
+  const errorEl = document.getElementById('comment-error-' + rowNum);
+  errorEl.style.display = 'none';
+  try {
+    await updateCell(rowNum, COL_COMMENT, text);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+    savedEl.style.display = 'inline';
+    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
+  } catch(e) {
+    errorEl.textContent = e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+async function setStatus(rowNum, status) {
+  const card = document.getElementById('card-' + rowNum);
+  const badge = document.getElementById('badge-' + rowNum);
+  const saving = document.getElementById('saving-' + rowNum);
+  const btns = card.querySelectorAll('button');
+  btns.forEach(function(b) { b.disabled = true; });
+  saving.style.display = 'block';
+  saving.textContent = 'Saving...';
+  saving.style.color = '#6b7280';
+  try {
+    await updateCell(rowNum, COL_STATUS, status);
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    await updateCell(rowNum, COL_UPDATED, now);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
+    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    card.className = 'job-card ' + status.toLowerCase();
+    badge.className = 'badge ' + status.toLowerCase();
+    badge.textContent = status;
+    saving.style.display = 'none';
+    btns[0].disabled = isWon;
+    btns[1].disabled = isLost;
+    btns[2].disabled = isUnknown;
+  } catch(e) {
+    saving.textContent = 'Save failed: ' + e.message;
+    saving.style.color = '#dc2626';
+    btns.forEach(function(b) { b.disabled = false; });
+  }
+}
+
+window.addEventListener('load', async function() {
+  try {
+    await msalInstance.handleRedirectPromise();
+    if (isAdmin) await initAdmin();
+    else if (customerId) await initCustomer(customerId);
+    else window.location.href = APP_URL + '?admin=true';
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+});
+</script>
+</body>
+</html>
+ + valueWon.toLocaleString() + '</div><div class="stat-label">Value Won</div></div>' +
+        '<div class="stat-card lost"><div class="stat-num">
+
+function filterTable(query) {
+  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
+    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function copyLink(link, id) {
+  navigator.clipboard.writeText(link).then(function() {
+    const btn = document.getElementById('btn-' + id);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// CUSTOMER
+async function initCustomer(id) {
+  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) {
+    try { await msalInstance.ssoSilent({ scopes }); }
+    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
+  }
+  showStatus('Loading your quotes...', 'info');
+  try {
+    await loadExcel();
+    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
+    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+}
+
+function renderCustomerView(name, jobs) {
+  showStatus('', '');
+  let cards = '';
+  jobs.forEach(function(r) {
+    const job = r[COL_JOB] || 'Unnamed Job';
+    const amount = r[COL_AMOUNT];
+    const status = String(r[COL_STATUS] || '').toLowerCase();
+    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
+    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+    const comment = r[COL_COMMENT] || '';
+    cards +=
+      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="job-name">' + job + '</div>' +
+          '<div class="job-meta">' + amtStr + '</div>' +
+          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
+          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
+          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
+          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
+          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
+          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
+        '</div>' +
+        '<div class="btn-group">' +
+          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
+          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
+          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('mainBody').innerHTML =
+    '<div class="customer-name-header">' + name + '</div>' +
+    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
+    '<div class="action-btns">' +
+      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
+      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
+    '</div>' +
+    '<div class="jobs">' + cards + '</div>';
+}
+
+function downloadCSV(customerName) {
+  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
+  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
+  jobs.forEach(function(r) {
+    rows.push([
+      r[COL_JOB] || '',
+      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
+      r[COL_STATUS] || 'Pending',
+      r[COL_UPDATED] || '',
+      r[COL_COMMENT] || ''
+    ]);
+  });
+  const csv = rows.map(function(r) {
+    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  }).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
+  a.click();
+}
+
+async function saveComment(rowNum) {
+  const text = document.getElementById('comment-' + rowNum).value;
+  const savedEl = document.getElementById('comment-saved-' + rowNum);
+  const errorEl = document.getElementById('comment-error-' + rowNum);
+  errorEl.style.display = 'none';
+  try {
+    await updateCell(rowNum, COL_COMMENT, text);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+    savedEl.style.display = 'inline';
+    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
+  } catch(e) {
+    errorEl.textContent = e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+async function setStatus(rowNum, status) {
+  const card = document.getElementById('card-' + rowNum);
+  const badge = document.getElementById('badge-' + rowNum);
+  const saving = document.getElementById('saving-' + rowNum);
+  const btns = card.querySelectorAll('button');
+  btns.forEach(function(b) { b.disabled = true; });
+  saving.style.display = 'block';
+  saving.textContent = 'Saving...';
+  saving.style.color = '#6b7280';
+  try {
+    await updateCell(rowNum, COL_STATUS, status);
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    await updateCell(rowNum, COL_UPDATED, now);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
+    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    card.className = 'job-card ' + status.toLowerCase();
+    badge.className = 'badge ' + status.toLowerCase();
+    badge.textContent = status;
+    saving.style.display = 'none';
+    btns[0].disabled = isWon;
+    btns[1].disabled = isLost;
+    btns[2].disabled = isUnknown;
+  } catch(e) {
+    saving.textContent = 'Save failed: ' + e.message;
+    saving.style.color = '#dc2626';
+    btns.forEach(function(b) { b.disabled = false; });
+  }
+}
+
+window.addEventListener('load', async function() {
+  try {
+    await msalInstance.handleRedirectPromise();
+    if (isAdmin) await initAdmin();
+    else if (customerId) await initCustomer(customerId);
+    else window.location.href = APP_URL + '?admin=true';
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+});
+</script>
+</body>
+</html>
+ + valueLost.toLocaleString() + '</div><div class="stat-label">Value Lost</div></div>' +
+        '<div class="stat-card"><div class="stat-num">
+
+function filterTable(query) {
+  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
+    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function copyLink(link, id) {
+  navigator.clipboard.writeText(link).then(function() {
+    const btn = document.getElementById('btn-' + id);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// CUSTOMER
+async function initCustomer(id) {
+  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
+  const accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) {
+    try { await msalInstance.ssoSilent({ scopes }); }
+    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
+  }
+  showStatus('Loading your quotes...', 'info');
+  try {
+    await loadExcel();
+    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
+    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+}
+
+function renderCustomerView(name, jobs) {
+  showStatus('', '');
+  let cards = '';
+  jobs.forEach(function(r) {
+    const job = r[COL_JOB] || 'Unnamed Job';
+    const amount = r[COL_AMOUNT];
+    const status = String(r[COL_STATUS] || '').toLowerCase();
+    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
+    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+    const comment = r[COL_COMMENT] || '';
+    cards +=
+      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="job-name">' + job + '</div>' +
+          '<div class="job-meta">' + amtStr + '</div>' +
+          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
+          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
+          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
+          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
+          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
+          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
+        '</div>' +
+        '<div class="btn-group">' +
+          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
+          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
+          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('mainBody').innerHTML =
+    '<div class="customer-name-header">' + name + '</div>' +
+    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
+    '<div class="action-btns">' +
+      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
+      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
+    '</div>' +
+    '<div class="jobs">' + cards + '</div>';
+}
+
+function downloadCSV(customerName) {
+  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
+  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
+  jobs.forEach(function(r) {
+    rows.push([
+      r[COL_JOB] || '',
+      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
+      r[COL_STATUS] || 'Pending',
+      r[COL_UPDATED] || '',
+      r[COL_COMMENT] || ''
+    ]);
+  });
+  const csv = rows.map(function(r) {
+    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+  }).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
+  a.click();
+}
+
+async function saveComment(rowNum) {
+  const text = document.getElementById('comment-' + rowNum).value;
+  const savedEl = document.getElementById('comment-saved-' + rowNum);
+  const errorEl = document.getElementById('comment-error-' + rowNum);
+  errorEl.style.display = 'none';
+  try {
+    await updateCell(rowNum, COL_COMMENT, text);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+    savedEl.style.display = 'inline';
+    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
+  } catch(e) {
+    errorEl.textContent = e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+async function setStatus(rowNum, status) {
+  const card = document.getElementById('card-' + rowNum);
+  const badge = document.getElementById('badge-' + rowNum);
+  const saving = document.getElementById('saving-' + rowNum);
+  const btns = card.querySelectorAll('button');
+  btns.forEach(function(b) { b.disabled = true; });
+  saving.style.display = 'block';
+  saving.textContent = 'Saving...';
+  saving.style.color = '#6b7280';
+  try {
+    await updateCell(rowNum, COL_STATUS, status);
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    await updateCell(rowNum, COL_UPDATED, now);
+    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
+    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
+    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    card.className = 'job-card ' + status.toLowerCase();
+    badge.className = 'badge ' + status.toLowerCase();
+    badge.textContent = status;
+    saving.style.display = 'none';
+    btns[0].disabled = isWon;
+    btns[1].disabled = isLost;
+    btns[2].disabled = isUnknown;
+  } catch(e) {
+    saving.textContent = 'Save failed: ' + e.message;
+    saving.style.color = '#dc2626';
+    btns.forEach(function(b) { b.disabled = false; });
+  }
+}
+
+window.addEventListener('load', async function() {
+  try {
+    await msalInstance.handleRedirectPromise();
+    if (isAdmin) await initAdmin();
+    else if (customerId) await initCustomer(customerId);
+    else window.location.href = APP_URL + '?admin=true';
+  } catch(e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+});
+</script>
+</body>
+</html>
+ + valueTotal.toLocaleString() + '</div><div class="stat-label">Total Pipeline</div></div>' +
+      '</div>' +
+
+      '<div class="section-title" style="margin-bottom:4px">Win Rate by Customer</div>' +
+      '<div style="font-size:0.8rem;color:#6b7280;margin-bottom:12px">Bar shows % of jobs marked Won</div>' +
+      analyticsRows +
+    '</div>';
+}
+
+function switchTab(tab) {
+  document.getElementById('panel-customers').style.display = tab === 'customers' ? 'block' : 'none';
+  document.getElementById('panel-analytics').style.display = tab === 'analytics' ? 'block' : 'none';
+  document.getElementById('tab-customers').className = 'tab' + (tab === 'customers' ? ' active' : '');
+  document.getElementById('tab-analytics').className = 'tab' + (tab === 'analytics' ? ' active' : '');
 }
 
 function filterTable(query) {
