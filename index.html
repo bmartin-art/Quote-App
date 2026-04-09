@@ -18,34 +18,32 @@
   .msg { padding: 14px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 16px; }
   .msg.error { background: #fee2e2; color: #dc2626; }
   .msg.info { background: #eff6ff; color: #1e40af; }
-  .admin-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-  .admin-table th { text-align: left; padding: 10px 12px; font-size: 0.8rem; color: #6b7280; border-bottom: 2px solid #e5e7eb; text-transform: uppercase; letter-spacing: 0.05em; }
-  .admin-table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; vertical-align: middle; }
-  .admin-table tr:hover td { background: #f9fafb; }
-  .copy-btn { background: #1a2f6e; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
-  .copy-btn.copied { background: #10b981; }
-  .job-count { background: #e5e7eb; color: #374151; border-radius: 20px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
-  .search-box { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
-  .search-box:focus { outline: none; border-color: #1a2f6e; }
   .section-title { font-size: 1rem; font-weight: 600; color: #111; margin-bottom: 12px; }
   .tabs { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 20px; }
   .tab { padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #6b7280; border-bottom: 3px solid transparent; margin-bottom: -2px; }
   .tab.active { color: #1a2f6e; border-bottom-color: #1a2f6e; }
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .admin-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .admin-table th { text-align: left; padding: 10px 12px; font-size: 0.8rem; color: #6b7280; border-bottom: 2px solid #e5e7eb; text-transform: uppercase; }
+  .admin-table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; vertical-align: middle; }
+  .admin-table tr:hover td { background: #f9fafb; }
+  .copy-btn { background: #1a2f6e; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer; }
+  .copy-btn.copied { background: #10b981; }
+  .job-count { background: #e5e7eb; color: #374151; border-radius: 20px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
+  .search-box { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+  .search-box:focus { outline: none; border-color: #1a2f6e; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-card { background: #f9fafb; border-radius: 10px; padding: 16px; text-align: center; border: 1.5px solid #e5e7eb; }
-  .stat-card .stat-num { font-size: 2rem; font-weight: 700; color: #1a2f6e; }
-  .stat-card .stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
-  .stat-card.won .stat-num { color: #10b981; }
-  .stat-card.lost .stat-num { color: #ef4444; }
-  .stat-card.unknown .stat-num { color: #f59e0b; }
-  .bar-wrap { margin-bottom: 24px; }
-  .bar-label { display: flex; justify-content: space-between; font-size: 0.82rem; color: #6b7280; margin-bottom: 4px; }
-  .bar-track { background: #e5e7eb; border-radius: 99px; height: 14px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
-  .customer-stat-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
-  .customer-stat-name { font-size: 0.9rem; font-weight: 600; color: #111; min-width: 160px; }
-  .mini-bar-track { flex: 1; background: #e5e7eb; border-radius: 99px; height: 10px; overflow: hidden; }
-  .mini-bar-fill { height: 100%; border-radius: 99px; background: #10b981; }
+  .stat-num { font-size: 1.8rem; font-weight: 700; color: #1a2f6e; }
+  .stat-num.won { color: #10b981; }
+  .stat-num.lost { color: #ef4444; }
+  .stat-num.unknown { color: #f59e0b; }
+  .stat-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+  .cust-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+  .cust-name { font-size: 0.9rem; font-weight: 600; color: #111; min-width: 160px; }
+  .cust-counts { font-size: 0.75rem; color: #6b7280; min-width: 100px; }
+  .bar-track { flex: 1; background: #e5e7eb; border-radius: 99px; height: 10px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; background: #10b981; }
+  .bar-pct { font-size: 0.8rem; font-weight: 600; color: #1a2f6e; min-width: 36px; text-align: right; }
   .jobs { display: flex; flex-direction: column; gap: 14px; }
   .job-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   .job-card.won { border-color: #10b981; background: #f0fdf4; }
@@ -63,8 +61,8 @@
   .btn-lost { background: #ef4444; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
   .btn-unknown { background: #f59e0b; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
-  .customer-name-header { font-size: 1.1rem; font-weight: 700; color: #111; margin-bottom: 4px; }
-  .customer-name-sub { font-size: 0.9rem; color: #6b7280; margin-bottom: 16px; }
+  .cust-header { font-size: 1.1rem; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .cust-sub { font-size: 0.9rem; color: #6b7280; margin-bottom: 16px; }
   .action-btns { display: flex; gap: 10px; margin-bottom: 20px; }
   .btn-action { padding: 7px 16px; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
   textarea { width: 100%; padding: 8px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; margin-top: 10px; }
@@ -92,38 +90,35 @@
 </div>
 
 <script>
-const CLIENT_ID = '02bde808-c0cd-47bc-90e7-98a844b5ed86';
-const APP_URL = 'https://bmartin-art.github.io/Quote-App/index.html';
-const COL_CUSTOMER = 'Brookstone Contractors';
-const COL_JOB = 'Name';
-const COL_AMOUNT = 'Total';
-const COL_STATUS = 'Status';
-const COL_COMMENT = 'Comment';
-const COL_ID = 'CustomerID';
-const COL_UPDATED = 'Last Updated';
+var CLIENT_ID = '02bde808-c0cd-47bc-90e7-98a844b5ed86';
+var APP_URL = 'https://bmartin-art.github.io/Quote-App/index.html';
+var COL_CUSTOMER = 'Brookstone Contractors';
+var COL_JOB = 'Name';
+var COL_AMOUNT = 'Total';
+var COL_STATUS = 'Status';
+var COL_COMMENT = 'Comment';
+var COL_ID = 'CustomerID';
+var COL_UPDATED = 'Last Updated';
 
-const msalConfig = {
+var msalConfig = {
   auth: {
     clientId: CLIENT_ID,
     authority: 'https://login.microsoftonline.com/common',
-    redirectUri: 'https://bmartin-art.github.io/Quote-App/index.html'
+    redirectUri: APP_URL
   }
 };
 
-const msalInstance = new msal.PublicClientApplication(msalConfig);
-const scopes = ['Files.ReadWrite', 'User.Read'];
-
-let fileId = null;
-let allRows = [];
-let headers = [];
-let firstSheetName = '';
-
-const params = new URLSearchParams(window.location.search);
-const isAdmin = params.get('admin') === 'true';
-const customerId = params.get('id');
+var msalInstance = new msal.PublicClientApplication(msalConfig);
+var scopes = ['Files.ReadWrite', 'User.Read'];
+var fileId = null;
+var allRows = [];
+var headers = [];
+var params = new URLSearchParams(window.location.search);
+var isAdmin = params.get('admin') === 'true';
+var customerId = params.get('id');
 
 function showStatus(msg, type) {
-  const el = document.getElementById('status');
+  var el = document.getElementById('status');
   if (!msg) { el.style.display = 'none'; return; }
   el.style.display = 'block';
   el.textContent = msg;
@@ -131,682 +126,201 @@ function showStatus(msg, type) {
 }
 
 function generateId(name) {
-  const clean = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
-  const rand = Math.random().toString(36).substring(2, 5).toUpperCase();
+  var clean = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+  var rand = Math.random().toString(36).substring(2, 5).toUpperCase();
   return clean + rand;
 }
 
-async function apiCall(url, options) {
+function getToken() {
+  var accounts = msalInstance.getAllAccounts();
+  if (!accounts.length) return Promise.reject(new Error('Not signed in'));
+  return msalInstance.acquireTokenSilent({ scopes: scopes, account: accounts[0], forceRefresh: true })
+    .then(function(r) { return r.accessToken; })
+    .catch(function() {
+      return msalInstance.acquireTokenSilent({ scopes: scopes, account: accounts[0] })
+        .then(function(r) { return r.accessToken; });
+    });
+}
+
+function apiCall(url, options) {
   options = options || {};
-  const accounts = msalInstance.getAllAccounts();
-  if (!accounts.length) throw new Error('Not signed in');
-  let token;
-  try {
-    const r = await msalInstance.acquireTokenSilent({ scopes, account: accounts[0], forceRefresh: true });
-    token = r.accessToken;
-  } catch(e) {
-    const r = await msalInstance.acquireTokenSilent({ scopes, account: accounts[0] });
-    token = r.accessToken;
-  }
-  const res = await fetch('https://graph.microsoft.com/v1.0' + url, Object.assign({}, options, {
-    headers: Object.assign({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, options.headers || {})
-  }));
-  if (!res.ok) {
-    const err = await res.json().catch(function() { return {}; });
-    throw new Error((err.error && err.error.message) || 'API error ' + res.status);
-  }
-  return res.json();
+  return getToken().then(function(token) {
+    var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+    return fetch('https://graph.microsoft.com/v1.0' + url, {
+      method: options.method || 'GET',
+      headers: headers,
+      body: options.body || undefined
+    });
+  }).then(function(res) {
+    if (!res.ok) return res.json().then(function(e) { throw new Error((e.error && e.error.message) || 'API error ' + res.status); });
+    return res.json();
+  });
 }
 
-async function loadExcel() {
+function loadExcel() {
   showStatus('Connecting to OneDrive...', 'info');
-  const search = await apiCall('/me/drive/root/search(q=\'Customer Quotes\')?$select=id,name');
-  const file = search.value.find(function(f) { return f.name.toLowerCase().includes('customer quotes'); });
-  if (!file) throw new Error('Could not find Customer Quotes.xlsx on OneDrive.');
-  fileId = file.id;
-  showStatus('Loading data...', 'info');
-  const sheetsData = await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets');
-  firstSheetName = 'Active';
-  const range = await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/' + encodeURIComponent(firstSheetName) + '/range(address=\'A1:G300\')');
-  const values = range.values;
-  if (!values || values.length < 2) throw new Error('No data found in sheet.');
-  headers = values[0];
-  allRows = values.slice(1).map(function(row, i) {
-    const obj = { _row: i + 2 };
-    headers.forEach(function(h, j) { obj[h] = row[j]; });
-    return obj;
-  }).filter(function(r) { return r[COL_CUSTOMER]; });
+  return apiCall('/me/drive/root/search(q=\'Customer%20Quotes\')?$select=id,name')
+    .then(function(search) {
+      var file = null;
+      for (var i = 0; i < search.value.length; i++) {
+        if (search.value[i].name.toLowerCase().indexOf('customer quotes') !== -1) { file = search.value[i]; break; }
+      }
+      if (!file) throw new Error('Could not find Customer Quotes.xlsx on OneDrive.');
+      fileId = file.id;
+      showStatus('Loading data...', 'info');
+      return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'A1:G300\')');
+    })
+    .then(function(range) {
+      var values = range.values;
+      if (!values || values.length < 2) throw new Error('No data found in sheet.');
+      headers = values[0];
+      allRows = [];
+      for (var i = 1; i < values.length; i++) {
+        var obj = { _row: i + 1 };
+        for (var j = 0; j < headers.length; j++) obj[headers[j]] = values[i][j];
+        if (obj[COL_CUSTOMER]) allRows.push(obj);
+      }
+    });
 }
 
-async function updateCell(rowNum, colName, value) {
-  const colIdx = headers.indexOf(colName);
-  if (colIdx === -1) throw new Error('Column "' + colName + '" not found. Headers: ' + headers.join(', '));
-  const colLetter = colIdx < 26 ? String.fromCharCode(65 + colIdx) : 'A' + String.fromCharCode(65 + colIdx - 26);
-  await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/' + encodeURIComponent(firstSheetName) + '/range(address=\'' + colLetter + rowNum + '\')', {
+function updateCell(rowNum, colName, value) {
+  var colIdx = headers.indexOf(colName);
+  if (colIdx === -1) return Promise.reject(new Error('Column not found: ' + colName));
+  var colLetter = String.fromCharCode(65 + colIdx);
+  return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')', {
     method: 'PATCH',
     body: JSON.stringify({ values: [[value]] })
   });
 }
 
 // ADMIN
-async function initAdmin() {
+function initAdmin() {
   document.getElementById('headerSub').textContent = 'Admin Dashboard';
   document.getElementById('signoutBtn').style.display = 'block';
-  const accounts = msalInstance.getAllAccounts();
+  var accounts = msalInstance.getAllAccounts();
   if (!accounts.length) { renderSignIn(); return; }
   showStatus('Loading...', 'info');
-  try {
-    await loadExcel();
-    if (!headers.includes(COL_ID)) {
-      const colLetter = String.fromCharCode(65 + headers.length);
-      await apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/' + encodeURIComponent(firstSheetName) + '/range(address=\'' + colLetter + '1\')', {
-        method: 'PATCH', body: JSON.stringify({ values: [[COL_ID]] })
+  loadExcel().then(function() {
+    var customerMap = {};
+    for (var i = 0; i < allRows.length; i++) {
+      var name = allRows[i][COL_CUSTOMER];
+      if (!customerMap[name]) customerMap[name] = allRows[i][COL_ID] || null;
+    }
+    var missing = [];
+    for (var n in customerMap) { if (!customerMap[n]) missing.push(n); }
+    function assignNext(idx) {
+      if (idx >= missing.length) { renderAdminDashboard(customerMap); return; }
+      var name = missing[idx];
+      var newId = generateId(name);
+      customerMap[name] = newId;
+      var rows = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
+      var chain = Promise.resolve();
+      rows.forEach(function(r) {
+        chain = chain.then(function() { return updateCell(r._row, COL_ID, newId); }).then(function() { r[COL_ID] = newId; });
       });
-      headers.push(COL_ID);
+      chain.then(function() { assignNext(idx + 1); }).catch(function(e) { showStatus('Error: ' + e.message, 'error'); });
     }
-    const customerMap = {};
-    allRows.forEach(function(r) {
-      const name = r[COL_CUSTOMER];
-      if (!customerMap[name]) customerMap[name] = r[COL_ID] || null;
-    });
-    for (const name in customerMap) {
-      if (!customerMap[name]) {
-        const newId = generateId(name);
-        customerMap[name] = newId;
-        const rows = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
-        for (let i = 0; i < rows.length; i++) {
-          await updateCell(rows[i]._row, COL_ID, newId);
-          rows[i][COL_ID] = newId;
-        }
-      }
-    }
-    renderAdminDashboard(customerMap);
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
+    assignNext(0);
+  }).catch(function(e) { showStatus('Error: ' + e.message, 'error'); });
 }
 
 function renderSignIn() {
-  document.getElementById('mainBody').innerHTML =
-    '<div class="msg info">Please sign in with your Microsoft account to access the admin dashboard.</div>' +
-    '<button class="btn-signin" onclick="adminSignIn()">Sign in with Microsoft</button>';
+  document.getElementById('mainBody').innerHTML = '<div class="msg info">Please sign in with your Microsoft account.</div><button class="btn-signin" onclick="adminSignIn()">Sign in with Microsoft</button>';
 }
 
-async function adminSignIn() {
-  try { await msalInstance.loginRedirect({ scopes }); }
-  catch(e) { showStatus('Sign in failed: ' + e.message, 'error'); }
-}
-
+function adminSignIn() { msalInstance.loginRedirect({ scopes: scopes }); }
 function signOut() { msalInstance.logoutRedirect(); }
 
 function renderAdminDashboard(customerMap) {
   showStatus('', '');
-  const customers = Object.keys(customerMap).sort().map(function(name) { return [name, customerMap[name]]; });
+  var names = Object.keys(customerMap).sort();
 
-  // Calculate stats
-  const totalJobs = allRows.length;
-  const totalWon = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
-  const totalLost = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).length;
-  const totalUnknown = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'unknown'; }).length;
-  const totalPending = totalJobs - totalWon - totalLost - totalUnknown;
-  const winRate = totalJobs > 0 ? Math.round((totalWon / (totalWon + totalLost)) * 100) || 0 : 0;
-  const valueWon = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
-  const valueLost = allRows.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
-  const valueTotal = allRows.reduce(function(s, r) { return s + (Number(r[COL_AMOUNT]) || 0); }, 0);
+  var totalWon = 0, totalLost = 0, totalUnknown = 0, totalPending = 0;
+  var valueWon = 0, valueLost = 0, valueTotal = 0;
+  allRows.forEach(function(r) {
+    var s = String(r[COL_STATUS] || '').toLowerCase();
+    var v = Number(r[COL_AMOUNT]) || 0;
+    valueTotal += v;
+    if (s === 'won') { totalWon++; valueWon += v; }
+    else if (s === 'lost') { totalLost++; valueLost += v; }
+    else if (s === 'unknown') { totalUnknown++; }
+    else { totalPending++; }
+  });
+  var winRate = (totalWon + totalLost) > 0 ? Math.round(totalWon / (totalWon + totalLost) * 100) : 0;
 
-  // Customer rows
-  let rows = '';
-  customers.forEach(function(pair) {
-    const name = pair[0], id = pair[1];
-    const jobs = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
-    const won = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
-    const lost = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).length;
-    const unknown = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'unknown'; }).length;
-    const hasComment = jobs.some(function(r) { return r[COL_COMMENT] && String(r[COL_COMMENT]).trim() !== ''; });
-    const dates = jobs.map(function(r) { return r[COL_UPDATED]; }).filter(Boolean).sort().reverse();
-    const lastUpdated = dates.length ? dates[0] : '';
-    const link = APP_URL + '?id=' + id;
-    rows += '<tr>' +
-      '<td><strong>' + name + '</strong>' + (hasComment ? ' <span style="background:#fef3c7;color:#92400e;font-size:0.7rem;font-weight:600;padding:2px 6px;border-radius:10px;margin-left:6px">Comment</span>' : '') + '</td>' +
-      '<td><span class="job-count">' + jobs.length + '</span></td>' +
-      '<td style="color:#065f46;font-weight:600">' + won + '</td>' +
-      '<td style="color:#991b1b;font-weight:600">' + lost + '</td>' +
-      '<td style="color:#92400e;font-weight:600">' + unknown + '</td>' +
-      '<td style="font-size:0.8rem;color:#6b7280">' + (lastUpdated || '&mdash;') + '</td>' +
-      '<td><button class="copy-btn" id="btn-' + id + '" onclick="copyLink(\'' + link + '\',\'' + id + '\')">Copy Link</button></td>' +
-      '</tr>';
+  var custRows = '';
+  names.forEach(function(name) {
+    var id = customerMap[name];
+    var jobs = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
+    var won = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
+    var lost = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).length;
+    var unk = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'unknown'; }).length;
+    var hasComment = jobs.some(function(r) { return r[COL_COMMENT] && String(r[COL_COMMENT]).trim(); });
+    var dates = jobs.map(function(r) { return r[COL_UPDATED]; }).filter(Boolean).sort().reverse();
+    var lastUpdated = dates.length ? dates[0] : '';
+    var link = APP_URL + '?id=' + id;
+    custRows += '<tr>';
+    custRows += '<td><strong>' + name + '</strong>';
+    if (hasComment) custRows += ' <span style="background:#fef3c7;color:#92400e;font-size:0.7rem;font-weight:600;padding:2px 6px;border-radius:10px">Comment</span>';
+    custRows += '</td>';
+    custRows += '<td><span class="job-count">' + jobs.length + '</span></td>';
+    custRows += '<td style="color:#065f46;font-weight:600">' + won + '</td>';
+    custRows += '<td style="color:#991b1b;font-weight:600">' + lost + '</td>';
+    custRows += '<td style="color:#92400e;font-weight:600">' + unk + '</td>';
+    custRows += '<td style="font-size:0.8rem;color:#6b7280">' + (lastUpdated || '-') + '</td>';
+    custRows += '<td><button class="copy-btn" id="btn-' + id + '" onclick="copyLink(\'' + link + '\',\'' + id + '\')">Copy Link</button></td>';
+    custRows += '</tr>';
   });
 
-  // Customer analytics rows
-  let analyticsRows = '';
-  customers.forEach(function(pair) {
-    const name = pair[0];
-    const jobs = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
-    const won = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
-    const total = jobs.length;
-    const pct = total > 0 ? Math.round((won / total) * 100) : 0;
-    analyticsRows += '<div class="customer-stat-row">' +
-      '<div class="customer-stat-name">' + name + '</div>' +
-      '<div style="display:flex;gap:6px;font-size:0.75rem;color:#6b7280;min-width:80px">' +
-        '<span style="color:#10b981;font-weight:600">' + won + 'W</span> / ' +
-        '<span style="color:#ef4444;font-weight:600">' + jobs.filter(function(r){return String(r[COL_STATUS]).toLowerCase()==='lost';}).length + 'L</span> / ' +
-        '<span>' + total + ' total</span>' +
-      '</div>' +
-      '<div class="mini-bar-track"><div class="mini-bar-fill" style="width:' + pct + '%"></div></div>' +
-      '<div style="font-size:0.8rem;font-weight:600;color:#1a2f6e;min-width:36px;text-align:right">' + pct + '%</div>' +
-    '</div>';
+  var analyticsRows = '';
+  names.forEach(function(name) {
+    var jobs = allRows.filter(function(r) { return r[COL_CUSTOMER] === name; });
+    var won = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'won'; }).length;
+    var lost = jobs.filter(function(r) { return String(r[COL_STATUS]).toLowerCase() === 'lost'; }).length;
+    var pct = jobs.length > 0 ? Math.round(won / jobs.length * 100) : 0;
+    analyticsRows += '<div class="cust-row">';
+    analyticsRows += '<div class="cust-name">' + name + '</div>';
+    analyticsRows += '<div class="cust-counts"><span style="color:#10b981;font-weight:600">' + won + 'W</span> / <span style="color:#ef4444;font-weight:600">' + lost + 'L</span> / ' + jobs.length + ' total</div>';
+    analyticsRows += '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>';
+    analyticsRows += '<div class="bar-pct">' + pct + '%</div>';
+    analyticsRows += '</div>';
   });
 
-  document.getElementById('mainBody').innerHTML =
-    '<div class="tabs">' +
-      '<div class="tab active" id="tab-customers" onclick="switchTab(\'customers\')">Customers</div>' +
-      '<div class="tab" id="tab-analytics" onclick="switchTab(\'analytics\')">Analytics</div>' +
-    '</div>' +
+  var html = '';
+  html += '<div class="tabs">';
+  html += '<div class="tab active" id="tab-customers" onclick="switchTab(\'customers\')">Customers</div>';
+  html += '<div class="tab" id="tab-analytics" onclick="switchTab(\'analytics\')">Analytics</div>';
+  html += '</div>';
 
-    // CUSTOMERS TAB
-    '<div id="panel-customers">' +
-      '<div class="section-title">All Customers (' + customers.length + ')</div>' +
-      '<input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">' +
-      '<table class="admin-table" id="adminTable">' +
-        '<thead><tr><th>Customer</th><th>Jobs</th><th>Won</th><th>Lost</th><th>Unknown</th><th>Last Updated</th><th>Link</th></tr></thead>' +
-        '<tbody>' + rows + '</tbody>' +
-      '</table>' +
-    '</div>' +
+  html += '<div id="panel-customers">';
+  html += '<div class="section-title">All Customers (' + names.length + ')</div>';
+  html += '<input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">';
+  html += '<table class="admin-table" id="adminTable"><thead><tr>';
+  html += '<th>Customer</th><th>Jobs</th><th>Won</th><th>Lost</th><th>Unknown</th><th>Last Updated</th><th>Link</th>';
+  html += '</tr></thead><tbody>' + custRows + '</tbody></table>';
+  html += '</div>';
 
-    // ANALYTICS TAB
-    '<div id="panel-analytics" style="display:none">' +
-      '<div class="section-title" style="margin-bottom:16px">Overall Summary</div>' +
-      '<div class="stat-grid">' +
-        '<div class="stat-card won"><div class="stat-num">' + totalWon + '</div><div class="stat-label">Won</div></div>' +
-        '<div class="stat-card lost"><div class="stat-num">' + totalLost + '</div><div class="stat-label">Lost</div></div>' +
-        '<div class="stat-card unknown"><div class="stat-num">' + totalUnknown + '</div><div class="stat-label">Unknown</div></div>' +
-        '<div class="stat-card"><div class="stat-num">' + totalPending + '</div><div class="stat-label">Pending</div></div>' +
-        '<div class="stat-card"><div class="stat-num">' + winRate + '%</div><div class="stat-label">Win Rate</div></div>' +
-        '<div class="stat-card"><div class="stat-num">' + totalJobs + '</div><div class="stat-label">Total Jobs</div></div>' +
-      '</div>' +
+  html += '<div id="panel-analytics" style="display:none">';
+  html += '<div class="section-title">Overall Summary</div>';
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="stat-num won">' + totalWon + '</div><div class="stat-label">Won</div></div>';
+  html += '<div class="stat-card"><div class="stat-num lost">' + totalLost + '</div><div class="stat-label">Lost</div></div>';
+  html += '<div class="stat-card"><div class="stat-num unknown">' + totalUnknown + '</div><div class="stat-label">Unknown</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">' + totalPending + '</div><div class="stat-label">Pending</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">' + winRate + '%</div><div class="stat-label">Win Rate</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">' + allRows.length + '</div><div class="stat-label">Total Jobs</div></div>';
+  html += '</div>';
+  html += '<div class="section-title">Job Value</div>';
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="stat-num won">$' + valueWon.toLocaleString() + '</div><div class="stat-label">Value Won</div></div>';
+  html += '<div class="stat-card"><div class="stat-num lost">$' + valueLost.toLocaleString() + '</div><div class="stat-label">Value Lost</div></div>';
+  html += '<div class="stat-card"><div class="stat-num">$' + valueTotal.toLocaleString() + '</div><div class="stat-label">Total Pipeline</div></div>';
+  html += '</div>';
+  html += '<div class="section-title">Win Rate by Customer</div>';
+  html += analyticsRows;
+  html += '</div>';
 
-      '<div class="section-title" style="margin-bottom:12px">Job Value</div>' +
-      '<div class="stat-grid" style="margin-bottom:24px">' +
-        '<div class="stat-card won"><div class="stat-num">
-
-function filterTable(query) {
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
-    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-  });
-}
-
-function copyLink(link, id) {
-  navigator.clipboard.writeText(link).then(function() {
-    const btn = document.getElementById('btn-' + id);
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-// CUSTOMER
-async function initCustomer(id) {
-  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
-  const accounts = msalInstance.getAllAccounts();
-  if (!accounts.length) {
-    try { await msalInstance.ssoSilent({ scopes }); }
-    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
-  }
-  showStatus('Loading your quotes...', 'info');
-  try {
-    await loadExcel();
-    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
-    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
-    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-}
-
-function renderCustomerView(name, jobs) {
-  showStatus('', '');
-  let cards = '';
-  jobs.forEach(function(r) {
-    const job = r[COL_JOB] || 'Unnamed Job';
-    const amount = r[COL_AMOUNT];
-    const status = String(r[COL_STATUS] || '').toLowerCase();
-    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
-    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    const comment = r[COL_COMMENT] || '';
-    cards +=
-      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
-        '<div style="flex:1;min-width:0">' +
-          '<div class="job-name">' + job + '</div>' +
-          '<div class="job-meta">' + amtStr + '</div>' +
-          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
-          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
-          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
-          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
-          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
-          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
-        '</div>' +
-        '<div class="btn-group">' +
-          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
-          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
-          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
-        '</div>' +
-      '</div>';
-  });
-  document.getElementById('mainBody').innerHTML =
-    '<div class="customer-name-header">' + name + '</div>' +
-    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
-    '<div class="action-btns">' +
-      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
-      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
-    '</div>' +
-    '<div class="jobs">' + cards + '</div>';
-}
-
-function downloadCSV(customerName) {
-  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
-  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
-  jobs.forEach(function(r) {
-    rows.push([
-      r[COL_JOB] || '',
-      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
-      r[COL_STATUS] || 'Pending',
-      r[COL_UPDATED] || '',
-      r[COL_COMMENT] || ''
-    ]);
-  });
-  const csv = rows.map(function(r) {
-    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
-  }).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
-  a.click();
-}
-
-async function saveComment(rowNum) {
-  const text = document.getElementById('comment-' + rowNum).value;
-  const savedEl = document.getElementById('comment-saved-' + rowNum);
-  const errorEl = document.getElementById('comment-error-' + rowNum);
-  errorEl.style.display = 'none';
-  try {
-    await updateCell(rowNum, COL_COMMENT, text);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
-    savedEl.style.display = 'inline';
-    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
-  } catch(e) {
-    errorEl.textContent = e.message;
-    errorEl.style.display = 'block';
-  }
-}
-
-async function setStatus(rowNum, status) {
-  const card = document.getElementById('card-' + rowNum);
-  const badge = document.getElementById('badge-' + rowNum);
-  const saving = document.getElementById('saving-' + rowNum);
-  const btns = card.querySelectorAll('button');
-  btns.forEach(function(b) { b.disabled = true; });
-  saving.style.display = 'block';
-  saving.textContent = 'Saving...';
-  saving.style.color = '#6b7280';
-  try {
-    await updateCell(rowNum, COL_STATUS, status);
-    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    await updateCell(rowNum, COL_UPDATED, now);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
-    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
-    card.className = 'job-card ' + status.toLowerCase();
-    badge.className = 'badge ' + status.toLowerCase();
-    badge.textContent = status;
-    saving.style.display = 'none';
-    btns[0].disabled = isWon;
-    btns[1].disabled = isLost;
-    btns[2].disabled = isUnknown;
-  } catch(e) {
-    saving.textContent = 'Save failed: ' + e.message;
-    saving.style.color = '#dc2626';
-    btns.forEach(function(b) { b.disabled = false; });
-  }
-}
-
-window.addEventListener('load', async function() {
-  try {
-    await msalInstance.handleRedirectPromise();
-    if (isAdmin) await initAdmin();
-    else if (customerId) await initCustomer(customerId);
-    else window.location.href = APP_URL + '?admin=true';
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-});
-</script>
-</body>
-</html>
- + valueWon.toLocaleString() + '</div><div class="stat-label">Value Won</div></div>' +
-        '<div class="stat-card lost"><div class="stat-num">
-
-function filterTable(query) {
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
-    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-  });
-}
-
-function copyLink(link, id) {
-  navigator.clipboard.writeText(link).then(function() {
-    const btn = document.getElementById('btn-' + id);
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-// CUSTOMER
-async function initCustomer(id) {
-  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
-  const accounts = msalInstance.getAllAccounts();
-  if (!accounts.length) {
-    try { await msalInstance.ssoSilent({ scopes }); }
-    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
-  }
-  showStatus('Loading your quotes...', 'info');
-  try {
-    await loadExcel();
-    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
-    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
-    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-}
-
-function renderCustomerView(name, jobs) {
-  showStatus('', '');
-  let cards = '';
-  jobs.forEach(function(r) {
-    const job = r[COL_JOB] || 'Unnamed Job';
-    const amount = r[COL_AMOUNT];
-    const status = String(r[COL_STATUS] || '').toLowerCase();
-    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
-    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    const comment = r[COL_COMMENT] || '';
-    cards +=
-      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
-        '<div style="flex:1;min-width:0">' +
-          '<div class="job-name">' + job + '</div>' +
-          '<div class="job-meta">' + amtStr + '</div>' +
-          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
-          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
-          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
-          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
-          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
-          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
-        '</div>' +
-        '<div class="btn-group">' +
-          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
-          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
-          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
-        '</div>' +
-      '</div>';
-  });
-  document.getElementById('mainBody').innerHTML =
-    '<div class="customer-name-header">' + name + '</div>' +
-    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
-    '<div class="action-btns">' +
-      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
-      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
-    '</div>' +
-    '<div class="jobs">' + cards + '</div>';
-}
-
-function downloadCSV(customerName) {
-  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
-  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
-  jobs.forEach(function(r) {
-    rows.push([
-      r[COL_JOB] || '',
-      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
-      r[COL_STATUS] || 'Pending',
-      r[COL_UPDATED] || '',
-      r[COL_COMMENT] || ''
-    ]);
-  });
-  const csv = rows.map(function(r) {
-    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
-  }).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
-  a.click();
-}
-
-async function saveComment(rowNum) {
-  const text = document.getElementById('comment-' + rowNum).value;
-  const savedEl = document.getElementById('comment-saved-' + rowNum);
-  const errorEl = document.getElementById('comment-error-' + rowNum);
-  errorEl.style.display = 'none';
-  try {
-    await updateCell(rowNum, COL_COMMENT, text);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
-    savedEl.style.display = 'inline';
-    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
-  } catch(e) {
-    errorEl.textContent = e.message;
-    errorEl.style.display = 'block';
-  }
-}
-
-async function setStatus(rowNum, status) {
-  const card = document.getElementById('card-' + rowNum);
-  const badge = document.getElementById('badge-' + rowNum);
-  const saving = document.getElementById('saving-' + rowNum);
-  const btns = card.querySelectorAll('button');
-  btns.forEach(function(b) { b.disabled = true; });
-  saving.style.display = 'block';
-  saving.textContent = 'Saving...';
-  saving.style.color = '#6b7280';
-  try {
-    await updateCell(rowNum, COL_STATUS, status);
-    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    await updateCell(rowNum, COL_UPDATED, now);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
-    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
-    card.className = 'job-card ' + status.toLowerCase();
-    badge.className = 'badge ' + status.toLowerCase();
-    badge.textContent = status;
-    saving.style.display = 'none';
-    btns[0].disabled = isWon;
-    btns[1].disabled = isLost;
-    btns[2].disabled = isUnknown;
-  } catch(e) {
-    saving.textContent = 'Save failed: ' + e.message;
-    saving.style.color = '#dc2626';
-    btns.forEach(function(b) { b.disabled = false; });
-  }
-}
-
-window.addEventListener('load', async function() {
-  try {
-    await msalInstance.handleRedirectPromise();
-    if (isAdmin) await initAdmin();
-    else if (customerId) await initCustomer(customerId);
-    else window.location.href = APP_URL + '?admin=true';
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-});
-</script>
-</body>
-</html>
- + valueLost.toLocaleString() + '</div><div class="stat-label">Value Lost</div></div>' +
-        '<div class="stat-card"><div class="stat-num">
-
-function filterTable(query) {
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
-    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-  });
-}
-
-function copyLink(link, id) {
-  navigator.clipboard.writeText(link).then(function() {
-    const btn = document.getElementById('btn-' + id);
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-// CUSTOMER
-async function initCustomer(id) {
-  document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
-  const accounts = msalInstance.getAllAccounts();
-  if (!accounts.length) {
-    try { await msalInstance.ssoSilent({ scopes }); }
-    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
-  }
-  showStatus('Loading your quotes...', 'info');
-  try {
-    await loadExcel();
-    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
-    if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
-    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-}
-
-function renderCustomerView(name, jobs) {
-  showStatus('', '');
-  let cards = '';
-  jobs.forEach(function(r) {
-    const job = r[COL_JOB] || 'Unnamed Job';
-    const amount = r[COL_AMOUNT];
-    const status = String(r[COL_STATUS] || '').toLowerCase();
-    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
-    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    const comment = r[COL_COMMENT] || '';
-    cards +=
-      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
-        '<div style="flex:1;min-width:0">' +
-          '<div class="job-name">' + job + '</div>' +
-          '<div class="job-meta">' + amtStr + '</div>' +
-          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
-          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
-          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
-          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
-          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
-          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
-        '</div>' +
-        '<div class="btn-group">' +
-          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
-          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
-          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
-        '</div>' +
-      '</div>';
-  });
-  document.getElementById('mainBody').innerHTML =
-    '<div class="customer-name-header">' + name + '</div>' +
-    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
-    '<div class="action-btns">' +
-      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
-      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
-    '</div>' +
-    '<div class="jobs">' + cards + '</div>';
-}
-
-function downloadCSV(customerName) {
-  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
-  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
-  jobs.forEach(function(r) {
-    rows.push([
-      r[COL_JOB] || '',
-      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
-      r[COL_STATUS] || 'Pending',
-      r[COL_UPDATED] || '',
-      r[COL_COMMENT] || ''
-    ]);
-  });
-  const csv = rows.map(function(r) {
-    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
-  }).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
-  a.click();
-}
-
-async function saveComment(rowNum) {
-  const text = document.getElementById('comment-' + rowNum).value;
-  const savedEl = document.getElementById('comment-saved-' + rowNum);
-  const errorEl = document.getElementById('comment-error-' + rowNum);
-  errorEl.style.display = 'none';
-  try {
-    await updateCell(rowNum, COL_COMMENT, text);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
-    savedEl.style.display = 'inline';
-    setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
-  } catch(e) {
-    errorEl.textContent = e.message;
-    errorEl.style.display = 'block';
-  }
-}
-
-async function setStatus(rowNum, status) {
-  const card = document.getElementById('card-' + rowNum);
-  const badge = document.getElementById('badge-' + rowNum);
-  const saving = document.getElementById('saving-' + rowNum);
-  const btns = card.querySelectorAll('button');
-  btns.forEach(function(b) { b.disabled = true; });
-  saving.style.display = 'block';
-  saving.textContent = 'Saving...';
-  saving.style.color = '#6b7280';
-  try {
-    await updateCell(rowNum, COL_STATUS, status);
-    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    await updateCell(rowNum, COL_UPDATED, now);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
-    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
-    card.className = 'job-card ' + status.toLowerCase();
-    badge.className = 'badge ' + status.toLowerCase();
-    badge.textContent = status;
-    saving.style.display = 'none';
-    btns[0].disabled = isWon;
-    btns[1].disabled = isLost;
-    btns[2].disabled = isUnknown;
-  } catch(e) {
-    saving.textContent = 'Save failed: ' + e.message;
-    saving.style.color = '#dc2626';
-    btns.forEach(function(b) { b.disabled = false; });
-  }
-}
-
-window.addEventListener('load', async function() {
-  try {
-    await msalInstance.handleRedirectPromise();
-    if (isAdmin) await initAdmin();
-    else if (customerId) await initCustomer(customerId);
-    else window.location.href = APP_URL + '?admin=true';
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
-});
-</script>
-</body>
-</html>
- + valueTotal.toLocaleString() + '</div><div class="stat-label">Total Pipeline</div></div>' +
-      '</div>' +
-
-      '<div class="section-title" style="margin-bottom:4px">Win Rate by Customer</div>' +
-      '<div style="font-size:0.8rem;color:#6b7280;margin-bottom:12px">Bar shows % of jobs marked Won</div>' +
-      analyticsRows +
-    '</div>';
+  document.getElementById('mainBody').innerHTML = html;
 }
 
 function switchTab(tab) {
@@ -817,14 +331,15 @@ function switchTab(tab) {
 }
 
 function filterTable(query) {
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(row) {
-    row.style.display = row.cells[0].textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-  });
+  var rows = document.querySelectorAll('#adminTable tbody tr');
+  for (var i = 0; i < rows.length; i++) {
+    rows[i].style.display = rows[i].cells[0].textContent.toLowerCase().indexOf(query.toLowerCase()) !== -1 ? '' : 'none';
+  }
 }
 
 function copyLink(link, id) {
   navigator.clipboard.writeText(link).then(function() {
-    const btn = document.getElementById('btn-' + id);
+    var btn = document.getElementById('btn-' + id);
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
     setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
@@ -832,66 +347,75 @@ function copyLink(link, id) {
 }
 
 // CUSTOMER
-async function initCustomer(id) {
+function initCustomer(id) {
   document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
-  const accounts = msalInstance.getAllAccounts();
+  var accounts = msalInstance.getAllAccounts();
+  var loginPromise;
   if (!accounts.length) {
-    try { await msalInstance.ssoSilent({ scopes }); }
-    catch(e) { await msalInstance.loginRedirect({ scopes }); return; }
+    loginPromise = msalInstance.ssoSilent({ scopes: scopes }).catch(function() {
+      return msalInstance.loginRedirect({ scopes: scopes });
+    });
+  } else {
+    loginPromise = Promise.resolve();
   }
-  showStatus('Loading your quotes...', 'info');
-  try {
-    await loadExcel();
-    const jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
+  loginPromise.then(function() {
+    showStatus('Loading your quotes...', 'info');
+    return loadExcel();
+  }).then(function() {
+    var jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
     if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
-    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs, id);
+  }).catch(function(e) { showStatus('Error: ' + e.message, 'error'); });
 }
 
-function renderCustomerView(name, jobs) {
+function renderCustomerView(name, jobs, id) {
   showStatus('', '');
-  let cards = '';
+  var cards = '';
   jobs.forEach(function(r) {
-    const job = r[COL_JOB] || 'Unnamed Job';
-    const amount = r[COL_AMOUNT];
-    const status = String(r[COL_STATUS] || '').toLowerCase();
-    const isWon = status === 'won', isLost = status === 'lost', isUnknown = status === 'unknown';
-    const amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    const comment = r[COL_COMMENT] || '';
-    cards +=
-      '<div class="job-card ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '') + '" id="card-' + r._row + '">' +
-        '<div style="flex:1;min-width:0">' +
-          '<div class="job-name">' + job + '</div>' +
-          '<div class="job-meta">' + amtStr + '</div>' +
-          '<span class="badge ' + (isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending') + '" id="badge-' + r._row + '">' + (isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending') + '</span>' +
-          '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>' +
-          '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>' +
-          '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>' +
-          '<span id="comment-saved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>' +
-          '<div id="comment-error-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>' +
-        '</div>' +
-        '<div class="btn-group">' +
-          '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>' +
-          '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>' +
-          '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>' +
-        '</div>' +
-      '</div>';
+    var job = r[COL_JOB] || 'Unnamed Job';
+    var amount = r[COL_AMOUNT];
+    var status = String(r[COL_STATUS] || '').toLowerCase();
+    var isWon = status === 'won';
+    var isLost = status === 'lost';
+    var isUnknown = status === 'unknown';
+    var cardClass = isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '';
+    var badgeClass = isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending';
+    var badgeText = isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending';
+    var amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+    var comment = r[COL_COMMENT] || '';
+    cards += '<div class="job-card ' + cardClass + '" id="card-' + r._row + '">';
+    cards += '<div style="flex:1;min-width:0">';
+    cards += '<div class="job-name">' + job + '</div>';
+    cards += '<div class="job-meta">' + amtStr + '</div>';
+    cards += '<span class="badge ' + badgeClass + '" id="badge-' + r._row + '">' + badgeText + '</span>';
+    cards += '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>';
+    cards += '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>';
+    cards += '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>';
+    cards += '<span id="csaved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>';
+    cards += '<div id="cerr-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>';
+    cards += '</div>';
+    cards += '<div class="btn-group">';
+    cards += '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>';
+    cards += '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>';
+    cards += '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>';
+    cards += '</div>';
+    cards += '</div>';
   });
-  document.getElementById('mainBody').innerHTML =
-    '<div class="customer-name-header">' + name + '</div>' +
-    '<div class="customer-name-sub">Click Won, Lost, or Unknown to update each job.</div>' +
-    '<div class="action-btns">' +
-      '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>' +
-      '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV(\'' + name.replace(/'/g, "\\'") + '\')">Download CSV</button>' +
-    '</div>' +
-    '<div class="jobs">' + cards + '</div>';
+
+  var html = '';
+  html += '<div class="cust-header">' + name + '</div>';
+  html += '<div class="cust-sub">Click Won, Lost, or Unknown to update each job.</div>';
+  html += '<div class="action-btns">';
+  html += '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>';
+  html += '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV()">Download CSV</button>';
+  html += '</div>';
+  html += '<div class="jobs">' + cards + '</div>';
+  document.getElementById('mainBody').innerHTML = html;
 }
 
-function downloadCSV(customerName) {
-  const jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
-  const rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
+function downloadCSV() {
+  var jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
+  var rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
   jobs.forEach(function(r) {
     rows.push([
       r[COL_JOB] || '',
@@ -901,49 +425,50 @@ function downloadCSV(customerName) {
       r[COL_COMMENT] || ''
     ]);
   });
-  const csv = rows.map(function(r) {
+  var csv = rows.map(function(r) {
     return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
   }).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = customerName.replace(/\s+/g, '_') + '_Quotes.csv';
+  a.download = 'Quotes.csv';
   a.click();
 }
 
-async function saveComment(rowNum) {
-  const text = document.getElementById('comment-' + rowNum).value;
-  const savedEl = document.getElementById('comment-saved-' + rowNum);
-  const errorEl = document.getElementById('comment-error-' + rowNum);
+function saveComment(rowNum) {
+  var text = document.getElementById('comment-' + rowNum).value;
+  var savedEl = document.getElementById('csaved-' + rowNum);
+  var errorEl = document.getElementById('cerr-' + rowNum);
   errorEl.style.display = 'none';
-  try {
-    await updateCell(rowNum, COL_COMMENT, text);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) allRows[idx][COL_COMMENT] = text;
+  updateCell(rowNum, COL_COMMENT, text).then(function() {
+    for (var i = 0; i < allRows.length; i++) {
+      if (allRows[i]._row === rowNum) { allRows[i][COL_COMMENT] = text; break; }
+    }
     savedEl.style.display = 'inline';
     setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
-  } catch(e) {
+  }).catch(function(e) {
     errorEl.textContent = e.message;
     errorEl.style.display = 'block';
-  }
+  });
 }
 
-async function setStatus(rowNum, status) {
-  const card = document.getElementById('card-' + rowNum);
-  const badge = document.getElementById('badge-' + rowNum);
-  const saving = document.getElementById('saving-' + rowNum);
-  const btns = card.querySelectorAll('button');
-  btns.forEach(function(b) { b.disabled = true; });
+function setStatus(rowNum, status) {
+  var card = document.getElementById('card-' + rowNum);
+  var badge = document.getElementById('badge-' + rowNum);
+  var saving = document.getElementById('saving-' + rowNum);
+  var btns = card.querySelectorAll('button');
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
   saving.style.display = 'block';
   saving.textContent = 'Saving...';
   saving.style.color = '#6b7280';
-  try {
-    await updateCell(rowNum, COL_STATUS, status);
-    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    await updateCell(rowNum, COL_UPDATED, now);
-    const idx = allRows.findIndex(function(r) { return r._row === rowNum; });
-    if (idx !== -1) { allRows[idx][COL_STATUS] = status; allRows[idx][COL_UPDATED] = now; }
-    const isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+  var now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  updateCell(rowNum, COL_STATUS, status).then(function() {
+    return updateCell(rowNum, COL_UPDATED, now);
+  }).then(function() {
+    for (var i = 0; i < allRows.length; i++) {
+      if (allRows[i]._row === rowNum) { allRows[i][COL_STATUS] = status; allRows[i][COL_UPDATED] = now; break; }
+    }
+    var isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
     card.className = 'job-card ' + status.toLowerCase();
     badge.className = 'badge ' + status.toLowerCase();
     badge.textContent = status;
@@ -951,22 +476,19 @@ async function setStatus(rowNum, status) {
     btns[0].disabled = isWon;
     btns[1].disabled = isLost;
     btns[2].disabled = isUnknown;
-  } catch(e) {
+  }).catch(function(e) {
     saving.textContent = 'Save failed: ' + e.message;
     saving.style.color = '#dc2626';
-    btns.forEach(function(b) { b.disabled = false; });
-  }
+    for (var i = 0; i < btns.length; i++) btns[i].disabled = false;
+  });
 }
 
-window.addEventListener('load', async function() {
-  try {
-    await msalInstance.handleRedirectPromise();
-    if (isAdmin) await initAdmin();
-    else if (customerId) await initCustomer(customerId);
+window.addEventListener('load', function() {
+  msalInstance.handleRedirectPromise().then(function() {
+    if (isAdmin) initAdmin();
+    else if (customerId) initCustomer(customerId);
     else window.location.href = APP_URL + '?admin=true';
-  } catch(e) {
-    showStatus('Error: ' + e.message, 'error');
-  }
+  }).catch(function(e) { showStatus('Error: ' + e.message, 'error'); });
 });
 </script>
 </body>
