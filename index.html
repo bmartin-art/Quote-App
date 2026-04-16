@@ -432,7 +432,7 @@ function renderCustomerView(name, jobs, id) {
     var badgeClass = isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending';
     var badgeText = isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending';
     var amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    var comment = r[COL_COMMENT] || '';
+    var comment = String(r[COL_COMMENT] || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     cards += '<div class="job-card ' + cardClass + '" id="card-' + r._row + '">';
     cards += '<div style="flex:1;min-width:0">';
     cards += '<div class="job-name">' + job + '</div>';
