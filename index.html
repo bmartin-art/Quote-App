@@ -49,6 +49,7 @@
   .job-card.won { border-color: #10b981; background: #f0fdf4; }
   .job-card.lost { border-color: #ef4444; background: #fef2f2; }
   .job-card.unknown { border-color: #f59e0b; background: #fffbeb; }
+  .job-info { flex: 1; min-width: 0; }
   .job-name { font-weight: 600; font-size: 0.97rem; color: #111; }
   .job-meta { font-size: 0.85rem; color: #6b7280; margin-top: 3px; }
   .badge { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
@@ -56,6 +57,10 @@
   .badge.lost { background: #fee2e2; color: #991b1b; }
   .badge.pending { background: #e5e7eb; color: #374151; }
   .badge.unknown { background: #fef3c7; color: #92400e; }
+  .job-comment { margin-top: 10px; }
+  .job-comment textarea { width: 100%; padding: 8px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; }
+  .job-comment textarea:focus { outline: none; border-color: #1a2f6e; }
+  .btn-save-comment { margin-top: 4px; padding: 5px 12px; background: #6b7280; color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
   .btn-group { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
   .btn-won { background: #10b981; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
   .btn-lost { background: #ef4444; color: white; border: none; border-radius: 7px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
@@ -65,16 +70,12 @@
   .cust-sub { font-size: 0.9rem; color: #6b7280; margin-bottom: 16px; }
   .action-btns { display: flex; gap: 10px; margin-bottom: 20px; }
   .btn-action { padding: 7px 16px; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
-  textarea { width: 100%; padding: 8px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; margin-top: 10px; }
-  textarea:focus { outline: none; border-color: #1a2f6e; }
-  .btn-comment { margin-top: 4px; padding: 5px 12px; background: #6b7280; color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
-  .brief-btn { position: fixed; right: 0; top: 50%; transform: translateY(-50%); background: #1a2f6e; color: white; border: none; border-radius: 8px 0 0 8px; padding: 14px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.05em; z-index: 100; box-shadow: -2px 0 8px rgba(0,0,0,0.2); }
-  .brief-panel { position: fixed; right: -420px; top: 0; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 200; transition: right 0.3s ease; display: flex; flex-direction: column; }
+  .brief-btn { position: fixed; right: 0; top: 50%; transform: translateY(-50%); background: #1a2f6e; color: white; border: none; border-radius: 8px 0 0 8px; padding: 14px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; writing-mode: vertical-rl; letter-spacing: 0.05em; z-index: 100; box-shadow: -2px 0 8px rgba(0,0,0,0.2); }
+  .brief-panel { position: fixed; right: -440px; top: 0; width: 440px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 200; transition: right 0.3s ease; display: flex; flex-direction: column; }
   .brief-panel.open { right: 0; }
   .brief-header { background: #1a2f6e; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .brief-header h3 { font-size: 1rem; font-weight: 600; }
   .brief-close { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0; }
-  .brief-panel iframe { flex: 1; border: none; width: 100%; }
   .brief-content { flex: 1; overflow-y: auto; padding: 20px; }
   .brief-issue { font-size: 0.8rem; color: #6b7280; margin-bottom: 4px; }
   .brief-title { font-size: 1.3rem; font-weight: 700; color: #1a2f6e; margin-bottom: 8px; }
@@ -83,9 +84,10 @@
   .brief-section h4 { font-size: 0.85rem; font-weight: 600; color: #1a2f6e; margin-bottom: 4px; }
   .brief-section p { font-size: 0.85rem; color: #4b5563; line-height: 1.5; }
   .brief-open-btn { display: block; width: 100%; padding: 12px; background: #1a2f6e; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-align: center; margin-top: 8px; }
+  @media print {
     body { background: white; padding: 0; }
     .container { box-shadow: none; border-radius: 0; }
-    .action-btns, .btn-group, textarea, .btn-comment { display: none; }
+    .action-btns, .btn-group, .job-comment, .brief-btn, .brief-panel { display: none; }
   }
 </style>
 </head>
@@ -115,7 +117,7 @@
     <div class="brief-tagline">Monthly Market Intelligence for the Trades</div>
     <div class="brief-section">
       <h4>Lancaster County Pulse</h4>
-      <p>Lancaster's economy showed real resilience heading into 2026. Businesses rebounded strongly in Q4 — employment returned to 2023-24 levels. The Places2040 amendment touches 30 of 60 municipalities, opening land for residential and industrial development.</p>
+      <p>Lancaster's economy showed real resilience heading into 2026. Businesses rebounded strongly in Q4. The Places2040 amendment touches 30 of 60 municipalities, opening land for residential and industrial development.</p>
     </div>
     <div class="brief-section">
       <h4>National Construction Outlook</h4>
@@ -127,7 +129,7 @@
     </div>
     <div class="brief-section">
       <h4>Our Take</h4>
-      <p>The work is there. Build escalation clauses into longer jobs, and get your fabrication scoped early — Q2 is shaping up to be a busy, compressed season.</p>
+      <p>The work is there. Build escalation clauses into longer jobs, and get your fabrication scoped early. Q2 is shaping up to be a busy, compressed season.</p>
     </div>
     <button class="brief-open-btn" onclick="window.open('https://www.brookstoneind.com/april2026','_blank')">Read Full Newsletter</button>
   </div>
@@ -189,10 +191,9 @@ function getToken() {
 function apiCall(url, options) {
   options = options || {};
   return getToken().then(function(token) {
-    var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
     return fetch('https://graph.microsoft.com/v1.0' + url, {
       method: options.method || 'GET',
-      headers: headers,
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: options.body || undefined
     });
   }).then(function(res) {
@@ -237,6 +238,10 @@ function updateCell(rowNum, colName, value) {
   });
 }
 
+function toggleBrief() {
+  document.getElementById('briefPanel').classList.toggle('open');
+}
+
 // ADMIN
 function initAdmin() {
   document.getElementById('headerSub').textContent = 'Admin Dashboard';
@@ -278,7 +283,6 @@ function signOut() { msalInstance.logoutRedirect(); }
 function renderAdminDashboard(customerMap) {
   showStatus('', '');
   var names = Object.keys(customerMap).sort();
-
   var totalWon = 0, totalLost = 0, totalUnknown = 0, totalPending = 0;
   var valueWon = 0, valueLost = 0, valueTotal = 0;
   allRows.forEach(function(r) {
@@ -335,7 +339,6 @@ function renderAdminDashboard(customerMap) {
   html += '<div class="tab active" id="tab-customers" onclick="switchTab(\'customers\')">Customers</div>';
   html += '<div class="tab" id="tab-analytics" onclick="switchTab(\'analytics\')">Analytics</div>';
   html += '</div>';
-
   html += '<div id="panel-customers">';
   html += '<div class="section-title">All Customers (' + names.length + ')</div>';
   html += '<input class="search-box" type="text" placeholder="Search customers..." oninput="filterTable(this.value)">';
@@ -343,7 +346,6 @@ function renderAdminDashboard(customerMap) {
   html += '<th>Customer</th><th>Jobs</th><th>Won</th><th>Lost</th><th>Unknown</th><th>Last Updated</th><th>Link</th>';
   html += '</tr></thead><tbody>' + custRows + '</tbody></table>';
   html += '</div>';
-
   html += '<div id="panel-analytics" style="display:none">';
   html += '<div class="section-title">Overall Summary</div>';
   html += '<div class="stat-grid">';
@@ -363,7 +365,6 @@ function renderAdminDashboard(customerMap) {
   html += '<div class="section-title">Win Rate by Customer</div>';
   html += analyticsRows;
   html += '</div>';
-
   document.getElementById('mainBody').innerHTML = html;
 }
 
@@ -393,65 +394,21 @@ function copyLink(link, id) {
 // CUSTOMER
 function initCustomer(id) {
   document.getElementById('headerSub').textContent = 'Your Quoted Jobs';
+  document.getElementById('briefBtn').style.display = 'block';
   var accounts = msalInstance.getAllAccounts();
-  var loginPromise;
-  if (!accounts.length) {
-    loginPromise = msalInstance.ssoSilent({ scopes: scopes }).catch(function() {
-      return msalInstance.loginRedirect({ scopes: scopes });
-    });
-  } else {
-    loginPromise = Promise.resolve();
-  }
-  loginPromise.then(function() {
+  var p = accounts.length ? Promise.resolve() : msalInstance.ssoSilent({ scopes: scopes }).catch(function() { return msalInstance.loginRedirect({ scopes: scopes }); });
+  p.then(function() {
     showStatus('Loading your quotes...', 'info');
     return loadExcel();
   }).then(function() {
     var jobs = allRows.filter(function(r) { return r[COL_ID] === id; });
     if (!jobs.length) { showStatus('No quotes found. Please contact Brookstone Industries.', 'error'); return; }
-    renderCustomerView(jobs[0][COL_CUSTOMER], jobs, id);
+    renderCustomerView(jobs[0][COL_CUSTOMER], jobs);
   }).catch(function(e) { showStatus('Error: ' + e.message, 'error'); });
 }
 
-function toggleBrief() {
-  var panel = document.getElementById('briefPanel');
-  panel.classList.toggle('open');
-}
-
-function renderCustomerView(name, jobs, id) {
-  document.getElementById('briefBtn').style.display = 'block';
+function renderCustomerView(name, jobs) {
   showStatus('', '');
-  var cards = '';
-  jobs.forEach(function(r) {
-    var job = r[COL_JOB] || 'Unnamed Job';
-    var amount = r[COL_AMOUNT];
-    var status = String(r[COL_STATUS] || '').toLowerCase();
-    var isWon = status === 'won';
-    var isLost = status === 'lost';
-    var isUnknown = status === 'unknown';
-    var cardClass = isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : '';
-    var badgeClass = isWon ? 'won' : isLost ? 'lost' : isUnknown ? 'unknown' : 'pending';
-    var badgeText = isWon ? 'Won' : isLost ? 'Lost' : isUnknown ? 'Unknown' : 'Pending';
-    var amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
-    var comment = String(r[COL_COMMENT] || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    cards += '<div class="job-card ' + cardClass + '" id="card-' + r._row + '">';
-    cards += '<div style="flex:1;min-width:0">';
-    cards += '<div class="job-name">' + job + '</div>';
-    cards += '<div class="job-meta">' + amtStr + '</div>';
-    cards += '<span class="badge ' + badgeClass + '" id="badge-' + r._row + '">' + badgeText + '</span>';
-    cards += '<div id="saving-' + r._row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>';
-    cards += '<textarea id="comment-' + r._row + '" placeholder="Leave a comment...">' + comment + '</textarea>';
-    cards += '<button class="btn-comment" onclick="saveComment(' + r._row + ')">Save Comment</button>';
-    cards += '<span id="csaved-' + r._row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>';
-    cards += '<div id="cerr-' + r._row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>';
-    cards += '</div>';
-    cards += '<div class="btn-group">';
-    cards += '<button class="btn-won" ' + (isWon ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Won\')">Won</button>';
-    cards += '<button class="btn-lost" ' + (isLost ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Lost\')">Lost</button>';
-    cards += '<button class="btn-unknown" ' + (isUnknown ? 'disabled' : '') + ' onclick="setStatus(' + r._row + ',\'Unknown\')">Unknown</button>';
-    cards += '</div>';
-    cards += '</div>';
-  });
-
   var html = '';
   html += '<div class="cust-header">' + name + '</div>';
   html += '<div class="cust-sub">Click Won, Lost, or Unknown to update each job.</div>';
@@ -459,7 +416,42 @@ function renderCustomerView(name, jobs, id) {
   html += '<button class="btn-action" style="background:#1a2f6e;color:white" onclick="window.print()">Print</button>';
   html += '<button class="btn-action" style="background:#6b7280;color:white" onclick="downloadCSV()">Download CSV</button>';
   html += '</div>';
-  html += '<div class="jobs">' + cards + '</div>';
+  html += '<div class="jobs">';
+  for (var i = 0; i < jobs.length; i++) {
+    var r = jobs[i];
+    var job = r[COL_JOB] || 'Unnamed Job';
+    var amount = r[COL_AMOUNT];
+    var status = String(r[COL_STATUS] || '').toLowerCase();
+    var isWon = (status === 'won');
+    var isLost = (status === 'lost');
+    var isUnknown = (status === 'unknown');
+    var cardClass = isWon ? 'won' : (isLost ? 'lost' : (isUnknown ? 'unknown' : ''));
+    var badgeClass = isWon ? 'won' : (isLost ? 'lost' : (isUnknown ? 'unknown' : 'pending'));
+    var badgeText = isWon ? 'Won' : (isLost ? 'Lost' : (isUnknown ? 'Unknown' : 'Pending'));
+    var amtStr = amount ? ' &middot; $' + Number(amount).toLocaleString() : '';
+    var comment = String(r[COL_COMMENT] || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var row = r._row;
+    html += '<div class="job-card ' + cardClass + '" id="card-' + row + '">';
+    html += '<div class="job-info">';
+    html += '<div class="job-name">' + job + '</div>';
+    html += '<div class="job-meta">' + amtStr + '</div>';
+    html += '<span class="badge ' + badgeClass + '" id="badge-' + row + '">' + badgeText + '</span>';
+    html += '<div id="saving-' + row + '" style="font-size:0.8rem;color:#6b7280;margin-top:4px;display:none">Saving...</div>';
+    html += '<div class="job-comment">';
+    html += '<textarea id="comment-' + row + '" placeholder="Leave a comment...">' + comment + '</textarea>';
+    html += '<button class="btn-save-comment" onclick="saveComment(' + row + ')">Save Comment</button>';
+    html += '<span id="csaved-' + row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>';
+    html += '<div id="cerr-' + row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="btn-group">';
+    html += '<button class="btn-won"' + (isWon ? ' disabled' : '') + ' onclick="setStatus(' + row + ',\'Won\')">Won</button>';
+    html += '<button class="btn-lost"' + (isLost ? ' disabled' : '') + ' onclick="setStatus(' + row + ',\'Lost\')">Lost</button>';
+    html += '<button class="btn-unknown"' + (isUnknown ? ' disabled' : '') + ' onclick="setStatus(' + row + ',\'Unknown\')">Unknown</button>';
+    html += '</div>';
+    html += '</div>';
+  }
+  html += '</div>';
   document.getElementById('mainBody').innerHTML = html;
 }
 
@@ -467,17 +459,9 @@ function downloadCSV() {
   var jobs = allRows.filter(function(r) { return r[COL_ID] === customerId; });
   var rows = [['Job', 'Amount', 'Status', 'Last Updated', 'Comment']];
   jobs.forEach(function(r) {
-    rows.push([
-      r[COL_JOB] || '',
-      r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '',
-      r[COL_STATUS] || 'Pending',
-      r[COL_UPDATED] || '',
-      r[COL_COMMENT] || ''
-    ]);
+    rows.push([r[COL_JOB] || '', r[COL_AMOUNT] ? '$' + Number(r[COL_AMOUNT]).toLocaleString() : '', r[COL_STATUS] || 'Pending', r[COL_UPDATED] || '', r[COL_COMMENT] || '']);
   });
-  var csv = rows.map(function(r) {
-    return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
-  }).join('\n');
+  var csv = rows.map(function(r) { return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
   var blob = new Blob([csv], { type: 'text/csv' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -496,17 +480,14 @@ function saveComment(rowNum) {
     }
     savedEl.style.display = 'inline';
     setTimeout(function() { savedEl.style.display = 'none'; }, 2000);
-  }).catch(function(e) {
-    errorEl.textContent = e.message;
-    errorEl.style.display = 'block';
-  });
+  }).catch(function(e) { errorEl.textContent = e.message; errorEl.style.display = 'block'; });
 }
 
 function setStatus(rowNum, status) {
   var card = document.getElementById('card-' + rowNum);
   var badge = document.getElementById('badge-' + rowNum);
   var saving = document.getElementById('saving-' + rowNum);
-  var btns = card.querySelectorAll('button');
+  var btns = card.querySelectorAll('.btn-group button');
   for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
   saving.style.display = 'block';
   saving.textContent = 'Saving...';
@@ -518,7 +499,9 @@ function setStatus(rowNum, status) {
     for (var i = 0; i < allRows.length; i++) {
       if (allRows[i]._row === rowNum) { allRows[i][COL_STATUS] = status; allRows[i][COL_UPDATED] = now; break; }
     }
-    var isWon = status === 'Won', isLost = status === 'Lost', isUnknown = status === 'Unknown';
+    var isWon = status === 'Won';
+    var isLost = status === 'Lost';
+    var isUnknown = status === 'Unknown';
     card.className = 'job-card ' + status.toLowerCase();
     badge.className = 'badge ' + status.toLowerCase();
     badge.textContent = status;
