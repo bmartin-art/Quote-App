@@ -75,6 +75,14 @@
   .brief-header h3 { font-size: 1rem; font-weight: 600; }
   .brief-close { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0; }
   .brief-panel iframe { flex: 1; border: none; width: 100%; }
+  .brief-content { flex: 1; overflow-y: auto; padding: 20px; }
+  .brief-issue { font-size: 0.8rem; color: #6b7280; margin-bottom: 4px; }
+  .brief-title { font-size: 1.3rem; font-weight: 700; color: #1a2f6e; margin-bottom: 8px; }
+  .brief-tagline { font-size: 0.9rem; color: #374151; margin-bottom: 16px; }
+  .brief-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6; }
+  .brief-section h4 { font-size: 0.85rem; font-weight: 600; color: #1a2f6e; margin-bottom: 4px; }
+  .brief-section p { font-size: 0.85rem; color: #4b5563; line-height: 1.5; }
+  .brief-open-btn { display: block; width: 100%; padding: 12px; background: #1a2f6e; color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-align: center; margin-top: 8px; }
     body { background: white; padding: 0; }
     .container { box-shadow: none; border-radius: 0; }
     .action-btns, .btn-group, textarea, .btn-comment { display: none; }
@@ -101,7 +109,28 @@
     <h3>The Brookstone Brief</h3>
     <button class="brief-close" onclick="toggleBrief()">&#x2715;</button>
   </div>
-  <iframe src="https://www.brookstoneind.com/april2026" title="The Brookstone Brief"></iframe>
+  <div class="brief-content">
+    <div class="brief-issue">April 1, 2026 &middot; Vol. 1, Issue 1</div>
+    <div class="brief-title">The Brookstone Brief</div>
+    <div class="brief-tagline">Monthly Market Intelligence for the Trades</div>
+    <div class="brief-section">
+      <h4>Lancaster County Pulse</h4>
+      <p>Lancaster's economy showed real resilience heading into 2026. Businesses rebounded strongly in Q4 — employment returned to 2023-24 levels. The Places2040 amendment touches 30 of 60 municipalities, opening land for residential and industrial development.</p>
+    </div>
+    <div class="brief-section">
+      <h4>National Construction Outlook</h4>
+      <p>Commercial construction remains active with data centers, healthcare, and institutional projects leading the way. Data center HVAC demand is up 33% year-over-year. Construction input prices climbed at an annualized rate of 12.6% in January-February.</p>
+    </div>
+    <div class="brief-section">
+      <h4>Raw Materials Snapshot</h4>
+      <p>Aluminum up 39.1% YOY &middot; Structural Steel up 20.9% YOY &middot; Copper up 15.1% YOY &middot; Galvanized Sheet supply tightening &middot; Diesel at $3.98/gal &middot; Lumber soft near $590/mbf.</p>
+    </div>
+    <div class="brief-section">
+      <h4>Our Take</h4>
+      <p>The work is there. Build escalation clauses into longer jobs, and get your fabrication scoped early — Q2 is shaping up to be a busy, compressed season.</p>
+    </div>
+    <button class="brief-open-btn" onclick="window.open('https://www.brookstoneind.com/april2026','_blank')">Read Full Newsletter</button>
+  </div>
 </div>
 
 <script>
