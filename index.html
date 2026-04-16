@@ -281,11 +281,11 @@ function workerGet(customerId) {
     });
 }
 
-function workerUpdate(rowNum, colName, value) {
+function workerUpdate(rowNum, colName, value, jobName) {
   return fetch(WORKER_URL + '/update', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ rowNum: rowNum, colName: colName, value: value })
+    body: JSON.stringify({ rowNum: rowNum, colName: colName, value: value, jobName: jobName || '' })
   }).then(function(res) { return res.json(); })
     .then(function(data) { if (data.error) throw new Error(data.error); return data; });
 }
@@ -539,7 +539,11 @@ function setStatus(rowNum, status) {
   saving.textContent = 'Saving...';
   saving.style.color = '#6b7280';
   var now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  workerUpdate(rowNum, COL_STATUS, status).then(function() {
+  var jobName = '';
+  for (var i = 0; i < allRows.length; i++) {
+    if (allRows[i]._row === rowNum) { jobName = allRows[i][COL_JOB] || ''; break; }
+  }
+  workerUpdate(rowNum, COL_STATUS, status, jobName).then(function() {
     return workerUpdate(rowNum, COL_UPDATED, now);
   }).then(function() {
     for (var i = 0; i < allRows.length; i++) {
