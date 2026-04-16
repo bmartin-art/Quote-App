@@ -75,6 +75,26 @@ textarea:focus { outline: none; border-color: #1a2f6e; }
   .action-btns, .btn-group, textarea, .btn-comment, .brief-btn, .brief-panel { display: none; }
 }
 .brief-btn { position: fixed; right: 0; top: 50%; transform: translateY(-50%); background: #1a2f6e; color: white; border: none; border-radius: 8px 0 0 8px; padding: 14px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; writing-mode: vertical-rl; letter-spacing: 0.05em; z-index: 100; box-shadow: -2px 0 8px rgba(0,0,0,0.2); }
+.opps-btn { position: fixed; right: 0; top: calc(50% - 120px); transform: translateY(-50%); background: #10b981; color: white; border: none; border-radius: 8px 0 0 8px; padding: 14px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; writing-mode: vertical-rl; letter-spacing: 0.05em; z-index: 100; box-shadow: -2px 0 8px rgba(0,0,0,0.2); }
+.opps-panel { position: fixed; right: -440px; top: 0; width: 440px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 200; transition: right 0.3s ease; display: flex; flex-direction: column; }
+.opps-panel.open { right: 0; }
+.opps-header { background: #10b981; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.opps-header h3 { font-size: 1rem; font-weight: 600; }
+.opps-close { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0; }
+.opps-content { flex: 1; overflow-y: auto; padding: 20px; }
+.opp-tile { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.opp-tile h4 { font-size: 0.95rem; font-weight: 600; color: #111; margin-bottom: 8px; }
+.opp-tile p { font-size: 0.85rem; color: #6b7280; margin-bottom: 12px; line-height: 1.5; }
+.opp-request-btn { width: 100%; padding: 9px; background: #10b981; color: white; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.opp-request-btn:hover { background: #059669; }
+.opps-empty { text-align: center; color: #9ca3af; font-size: 0.9rem; padding: 40px 0; }
+.admin-opps { margin-top: 24px; padding-top: 24px; border-top: 2px solid #e5e7eb; }
+.opp-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.opp-input-row input { flex: 1; padding: 8px 12px; border: 1.5px solid #d1d5db; border-radius: 7px; font-size: 0.9rem; }
+.opp-input-row input:focus { outline: none; border-color: #10b981; }
+.opp-add-btn { padding: 8px 14px; background: #10b981; color: white; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.opp-list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; }
+.opp-remove-btn { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; font-weight: 700; padding: 0 4px; }
 .brief-panel { position: fixed; right: -440px; top: 0; width: 440px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 200; transition: right 0.3s ease; display: flex; flex-direction: column; }
 .brief-panel.open { right: 0; }
 .brief-header { background: #1a2f6e; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -97,6 +117,17 @@ textarea:focus { outline: none; border-color: #1a2f6e; }
       <h1>Customer Quotes</h1>
       <p id="headerSub">Brookstone Industries</p>
     </div>
+
+<button class="opps-btn" id="oppsBtn" onclick="toggleOpps()">Brookstone Opportunities</button>
+<div class="opps-panel" id="oppsPanel">
+  <div class="opps-header">
+    <h3>Brookstone Opportunities</h3>
+    <button class="opps-close" onclick="toggleOpps()">&#x2715;</button>
+  </div>
+  <div class="opps-content" id="oppsContent">
+    <div class="opps-empty">No opportunities posted yet.</div>
+  </div>
+</div>
 
 <button class="brief-btn" id="briefBtn" onclick="toggleBrief()">Brookstone Brief</button>
 <div class="brief-panel" id="briefPanel">
@@ -239,6 +270,7 @@ function updateCell(rowNum, colName, value) {
 
 function initAdmin() {
   document.getElementById('briefBtn').style.display = 'none';
+  document.getElementById('oppsBtn').style.display = 'none';
   document.getElementById('headerSub').textContent = 'Admin Dashboard';
   document.getElementById('signoutBtn').style.display = 'block';
   var accounts = msalInstance.getAllAccounts();
@@ -358,6 +390,11 @@ function renderAdminDashboard(customerMap) {
   html += analyticsRows;
   html += '</div>';
   document.getElementById('mainBody').innerHTML = html;
+  var adminOppsDiv = document.createElement('div');
+  adminOppsDiv.className = 'admin-opps';
+  adminOppsDiv.id = 'adminOpps';
+  document.getElementById('mainBody').appendChild(adminOppsDiv);
+  renderAdminOpps();
 }
 
 function switchTab(tab) {
@@ -385,6 +422,89 @@ function copyLink(link, id) {
 
 function toggleBrief() {
   document.getElementById('briefPanel').classList.toggle('open');
+  document.getElementById('oppsPanel').classList.remove('open');
+}
+
+function toggleOpps() {
+  document.getElementById('oppsPanel').classList.toggle('open');
+  document.getElementById('briefPanel').classList.remove('open');
+}
+
+function loadOpportunities() {
+  var stored = localStorage.getItem('brookstone_opps');
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveOpportunities(opps) {
+  localStorage.setItem('brookstone_opps', JSON.stringify(opps));
+  renderOppsPanel(opps);
+}
+
+function renderOppsPanel(opps) {
+  var content = document.getElementById('oppsContent');
+  if (!content) return;
+  if (!opps || opps.length === 0) {
+    content.innerHTML = '<div class="opps-empty">No opportunities posted yet. Check back next month!</div>';
+    return;
+  }
+  var html = '<p style="font-size:0.85rem;color:#6b7280;margin-bottom:16px">These are recent project types we have priced. Reach out if you need a quote!</p>';
+  opps.forEach(function(opp, idx) {
+    html += '<div class="opp-tile">';
+    html += '<h4>' + opp.name + '</h4>';
+    if (opp.desc) html += '<p>' + opp.desc + '</p>';
+    html += '<button class="opp-request-btn" onclick="requestPrice(\'' + idx + '\')">Request Brookstone Price</button>';
+    html += '</div>';
+  });
+  content.innerHTML = html;
+}
+
+function requestPrice(idx) {
+  var opps = loadOpportunities();
+  var opp = opps[idx];
+  if (!opp) return;
+  window.open('mailto:sales@brookstoneind.com?subject=Price Request: ' + encodeURIComponent(opp.name) + '&body=Hi Brookstone Team,%0A%0AI am interested in getting a price for: ' + encodeURIComponent(opp.name) + '%0A%0APlease reach out to discuss.%0A%0AThank you', '_blank');
+}
+
+function renderAdminOpps() {
+  var opps = loadOpportunities();
+  var listHtml = opps.length === 0 ? '<div style="color:#9ca3af;font-size:0.85rem">No opportunities added yet.</div>' : '';
+  opps.forEach(function(opp, idx) {
+    listHtml += '<div class="opp-list-item">';
+    listHtml += '<div><strong>' + opp.name + '</strong>' + (opp.desc ? '<br><span style="font-size:0.8rem;color:#6b7280">' + opp.desc + '</span>' : '') + '</div>';
+    listHtml += '<button class="opp-remove-btn" onclick="removeOpp(' + idx + ')">x</button>';
+    listHtml += '</div>';
+  });
+  var adminOppsEl = document.getElementById('adminOpps');
+  if (adminOppsEl) {
+    adminOppsEl.innerHTML =
+      '<div class="section-title" style="color:#10b981">Brookstone Opportunities</div>' +
+      '<p style="font-size:0.85rem;color:#6b7280;margin-bottom:12px">Add project types to show customers on their view.</p>' +
+      '<div class="opp-input-row">' +
+        '<input type="text" id="oppName" placeholder="Project name e.g. Data Center HVAC">' +
+        '<input type="text" id="oppDesc" placeholder="Short description (optional)">' +
+        '<button class="opp-add-btn" onclick="addOpp()">Add</button>' +
+      '</div>' +
+      listHtml;
+  }
+}
+
+function addOpp() {
+  var name = document.getElementById('oppName').value.trim();
+  if (!name) return;
+  var desc = document.getElementById('oppDesc').value.trim();
+  var opps = loadOpportunities();
+  opps.push({ name: name, desc: desc });
+  saveOpportunities(opps);
+  document.getElementById('oppName').value = '';
+  document.getElementById('oppDesc').value = '';
+  renderAdminOpps();
+}
+
+function removeOpp(idx) {
+  var opps = loadOpportunities();
+  opps.splice(idx, 1);
+  saveOpportunities(opps);
+  renderAdminOpps();
 }
 
 function initCustomer(id) {
@@ -509,6 +629,7 @@ function setStatus(rowNum, status) {
 }
 
 window.addEventListener('load', function() {
+  renderOppsPanel(loadOpportunities());
   msalInstance.handleRedirectPromise().then(function() {
     if (isAdmin) initAdmin();
     else if (customerId) initCustomer(customerId);
