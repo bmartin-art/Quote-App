@@ -521,7 +521,8 @@ function dismissFollowUp(row, btn) {
     setTimeout(function() { card.remove(); }, 400);
   });
 }
-  var rows = document.querySelectorAll('#adminTable tbody tr');
+
+function filterTable(query) {
   for (var i = 0; i < rows.length; i++) {
     rows[i].style.display = rows[i].cells[0].textContent.toLowerCase().indexOf(query.toLowerCase()) !== -1 ? '' : 'none';
   }
