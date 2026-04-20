@@ -429,6 +429,8 @@ function renderAdminDashboard(customerMap) {
   html += '<div class="stat-card"><div class="stat-num lost">$' + valueLost.toLocaleString() + '</div><div class="stat-label">Value Lost</div></div>';
   html += '<div class="stat-card"><div class="stat-num">$' + valueTotal.toLocaleString() + '</div><div class="stat-label">Total Pipeline</div></div>';
   html += '</div>';
+  html += '<div class="section-title">Follow Up Stats</div>';
+  html += '<div class="stat-grid" id="followup-stats"><div class="stat-card"><div class="stat-num" style="font-size:1rem;color:#6b7280">Loading...</div></div></div>';
   html += '<div class="section-title">Win Rate by Customer</div>';
   html += analyticsRows;
   html += '</div>';
@@ -448,6 +450,41 @@ function switchTab(tab) {
   document.getElementById('tab-analytics').className = 'tab' + (tab === 'analytics' ? ' active' : '');
   document.getElementById('tab-followups').className = 'tab' + (tab === 'followups' ? ' active' : '');
   if (tab === 'followups') loadFollowUps();
+  if (tab === 'analytics') loadFollowUpStats();
+}
+
+function loadFollowUpStats() {
+  fetch(WORKER_URL + '/followups')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var el = document.getElementById('followup-stats');
+      if (!el) return;
+      var allRows2 = data.rows || [];
+      // Count all including dismissed for analytics
+      fetch(WORKER_URL + '/followups?all=true')
+        .then(function(r) { return r.json(); })
+        .then(function(data2) {
+          var rows2 = data2.rows || [];
+          var green = rows2.filter(function(r) { return r.type === 'green'; }).length;
+          var red = rows2.filter(function(r) { return r.type === 'red'; }).length;
+          var yellow = rows2.filter(function(r) { return r.type === 'yellow'; }).length;
+          el.innerHTML =
+            '<div class="stat-card"><div class="stat-num won">' + green + '</div><div class="stat-label">Awarded to Brookstone</div></div>' +
+            '<div class="stat-card"><div class="stat-num lost">' + red + '</div><div class="stat-label">Customer Won - Not Us</div></div>' +
+            '<div class="stat-card"><div class="stat-num unknown">' + yellow + '</div><div class="stat-label">Customer Has Job - Pending</div></div>';
+        }).catch(function() {
+          var green = allRows2.filter(function(r) { return r.type === 'green'; }).length;
+          var red = allRows2.filter(function(r) { return r.type === 'red'; }).length;
+          var yellow = allRows2.filter(function(r) { return r.type === 'yellow'; }).length;
+          el.innerHTML =
+            '<div class="stat-card"><div class="stat-num won">' + green + '</div><div class="stat-label">Awarded to Brookstone</div></div>' +
+            '<div class="stat-card"><div class="stat-num lost">' + red + '</div><div class="stat-label">Customer Won - Not Us</div></div>' +
+            '<div class="stat-card"><div class="stat-num unknown">' + yellow + '</div><div class="stat-label">Customer Has Job - Pending</div></div>';
+        });
+    }).catch(function() {
+      var el = document.getElementById('followup-stats');
+      if (el) el.innerHTML = '<div class="stat-card"><div style="color:#9ca3af;font-size:0.85rem">No follow up data yet</div></div>';
+    });
 }
 
 function loadFollowUps() {
@@ -588,7 +625,7 @@ function renderCustomerView(name, jobs) {
     html += '<button class="btn-comment" onclick="saveComment(' + row + ')">Save Comment</button>';
     html += '<span id="csaved-' + row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>';
     html += '<div id="cerr-' + row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>';
-    html += '<div class="followup-section">';
+    html += '<div class="followup-section" id="followup-' + row + '">';
     html += '<div class="followup-label">If won, will it be a Brookstone awarded project?</div>';
     html += '<div class="followup-btns">';
     html += '<button class="btn-followup-yes" onclick="saveFollowUp(' + row + ', \'yes\', \'' + job.replace(/'/g, "\\'") + '\')">Yes</button>';
@@ -692,6 +729,26 @@ function setStatus(rowNum, status) {
     btns[0].disabled = isWon;
     btns[1].disabled = isLost;
     btns[2].disabled = isUnknown;
+    // Highlight follow-up section red as required when Won is clicked
+    var followupSection = document.getElementById('followup-' + rowNum);
+    if (followupSection) {
+      if (isWon) {
+        followupSection.style.borderColor = '#ef4444';
+        followupSection.style.background = '#fef2f2';
+        followupSection.style.borderRadius = '8px';
+        followupSection.style.padding = '10px';
+        followupSection.style.borderWidth = '2px';
+        followupSection.style.borderStyle = 'solid';
+        var label = followupSection.querySelector('.followup-label');
+        if (label) { label.style.color = '#dc2626'; label.textContent = '⚠️ Required: If won, will it be a Brookstone awarded project?'; }
+      } else {
+        followupSection.style.border = '';
+        followupSection.style.background = '';
+        followupSection.style.padding = '';
+        var label = followupSection.querySelector('.followup-label');
+        if (label) { label.style.color = ''; label.textContent = 'If won, will it be a Brookstone awarded project?'; }
+      }
+    }
   }).catch(function(e) {
     saving.textContent = 'Save failed: ' + e.message;
     saving.style.color = '#dc2626';
