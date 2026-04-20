@@ -48,6 +48,25 @@ body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100
 .job-card { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .job-card.won { border-color: #10b981; background: #f0fdf4; }
 .job-card.lost { border-color: #ef4444; background: #fef2f2; }
+.followup-section { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb; }
+.followup-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 8px; }
+.followup-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-followup-yes { background: #10b981; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.btn-followup-no { background: #ef4444; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.btn-followup-unknown { background: #f59e0b; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.followup-saved { font-size: 0.8rem; color: #6b7280; margin-top: 6px; display: none; }
+.followup-card { border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.followup-card.green { background: #f0fdf4; border: 1.5px solid #10b981; }
+.followup-card.red { background: #fef2f2; border: 1.5px solid #ef4444; }
+.followup-card.yellow { background: #fffbeb; border: 1.5px solid #f59e0b; }
+.followup-card-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 3px; }
+.followup-card-title.green { color: #065f46; }
+.followup-card-title.red { color: #991b1b; }
+.followup-card-title.yellow { color: #92400e; }
+.followup-card-details { font-size: 0.82rem; color: #374151; }
+.followup-card-date { font-size: 0.75rem; color: #9ca3af; margin-top: 3px; }
+.btn-dismiss { background: none; border: 1.5px solid #d1d5db; color: #6b7280; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.btn-dismiss:hover { background: #f3f4f6; }
 .job-card.unknown { border-color: #f59e0b; background: #fffbeb; }
 .job-info { flex: 1; min-width: 0; }
 .job-name { font-weight: 600; font-size: 0.97rem; color: #111; }
@@ -385,6 +404,7 @@ function renderAdminDashboard(customerMap) {
   html += '<div class="tabs">';
   html += '<div class="tab active" id="tab-customers" onclick="switchTab(\'customers\')">Customers</div>';
   html += '<div class="tab" id="tab-analytics" onclick="switchTab(\'analytics\')">Analytics</div>';
+  html += '<div class="tab" id="tab-followups" onclick="switchTab(\'followups\')">Follow Ups</div>';
   html += '</div>';
   html += '<div id="panel-customers">';
   html += '<div class="section-title">All Customers (' + names.length + ')</div>';
@@ -412,17 +432,95 @@ function renderAdminDashboard(customerMap) {
   html += '<div class="section-title">Win Rate by Customer</div>';
   html += analyticsRows;
   html += '</div>';
+  html += '<div id="panel-followups" style="display:none">';
+  html += '<div class="section-title">Follow Ups</div>';
+  html += '<div id="followups-loading" class="msg info">Loading follow ups...</div>';
+  html += '<div id="followups-content"></div>';
+  html += '</div>';
   document.getElementById('mainBody').innerHTML = html;
 }
 
 function switchTab(tab) {
   document.getElementById('panel-customers').style.display = tab === 'customers' ? 'block' : 'none';
   document.getElementById('panel-analytics').style.display = tab === 'analytics' ? 'block' : 'none';
+  document.getElementById('panel-followups').style.display = tab === 'followups' ? 'block' : 'none';
   document.getElementById('tab-customers').className = 'tab' + (tab === 'customers' ? ' active' : '');
   document.getElementById('tab-analytics').className = 'tab' + (tab === 'analytics' ? ' active' : '');
+  document.getElementById('tab-followups').className = 'tab' + (tab === 'followups' ? ' active' : '');
+  if (tab === 'followups') loadFollowUps();
 }
 
-function filterTable(query) {
+function loadFollowUps() {
+  var loadingEl = document.getElementById('followups-loading');
+  var contentEl = document.getElementById('followups-content');
+  if (loadingEl) loadingEl.style.display = 'block';
+  fetch(WORKER_URL + '/followups')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (!data.rows || data.rows.length === 0) {
+        contentEl.innerHTML = '<div style="color:#9ca3af;font-size:0.9rem;padding:20px 0">No follow ups yet.</div>';
+        return;
+      }
+      var green = data.rows.filter(function(r) { return r.type === 'green'; });
+      var red = data.rows.filter(function(r) { return r.type === 'red'; });
+      var yellow = data.rows.filter(function(r) { return r.type === 'yellow'; });
+      var html = '';
+      if (green.length) {
+        html += '<div class="section-title" style="color:#065f46;margin-bottom:8px">✅ Job Awarded to Brookstone (' + green.length + ')</div>';
+        green.forEach(function(r) {
+          html += '<div class="followup-card green">';
+          html += '<div><div class="followup-card-title green">Job Awarded to Brookstone</div>';
+          html += '<div class="followup-card-details"><strong>' + r.customerName + '</strong> — ' + r.jobName + '</div>';
+          html += '<div class="followup-card-date">' + r.date + '</div></div>';
+          html += '<button class="btn-dismiss" onclick="dismissFollowUp(' + r.row + ', this)">Dismiss</button>';
+          html += '</div>';
+        });
+      }
+      if (red.length) {
+        html += '<div class="section-title" style="color:#991b1b;margin-bottom:8px;margin-top:16px">🔴 Customer Won — Not Using Our Number (' + red.length + ')</div>';
+        red.forEach(function(r) {
+          html += '<div class="followup-card red">';
+          html += '<div><div class="followup-card-title red">Customer awarded job — not using our number, follow up</div>';
+          html += '<div class="followup-card-details"><strong>' + r.customerName + '</strong> — ' + r.jobName + '</div>';
+          html += '<div class="followup-card-date">' + r.date + '</div></div>';
+          html += '<button class="btn-dismiss" onclick="dismissFollowUp(' + r.row + ', this)">Dismiss</button>';
+          html += '</div>';
+        });
+      }
+      if (yellow.length) {
+        html += '<div class="section-title" style="color:#92400e;margin-bottom:8px;margin-top:16px">🟡 Customer Has Job — Not Awarded Yet (' + yellow.length + ')</div>';
+        yellow.forEach(function(r) {
+          html += '<div class="followup-card yellow">';
+          html += '<div><div class="followup-card-title yellow">Customer has job — not awarded to duct supplier yet</div>';
+          html += '<div class="followup-card-details"><strong>' + r.customerName + '</strong> — ' + r.jobName + '</div>';
+          html += '<div class="followup-card-date">' + r.date + '</div></div>';
+          html += '<button class="btn-dismiss" onclick="dismissFollowUp(' + r.row + ', this)">Dismiss</button>';
+          html += '</div>';
+        });
+      }
+      contentEl.innerHTML = html;
+    })
+    .catch(function(e) {
+      if (loadingEl) loadingEl.style.display = 'none';
+      contentEl.innerHTML = '<div class="msg error">Error loading follow ups: ' + e.message + '</div>';
+    });
+}
+
+function dismissFollowUp(row, btn) {
+  btn.textContent = 'Dismissing...';
+  btn.disabled = true;
+  fetch(WORKER_URL + '/dismissfollowup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ row: row })
+  }).then(function() {
+    var card = btn.closest('.followup-card');
+    card.style.opacity = '0.4';
+    card.style.pointerEvents = 'none';
+    setTimeout(function() { card.remove(); }, 400);
+  });
+}
   var rows = document.querySelectorAll('#adminTable tbody tr');
   for (var i = 0; i < rows.length; i++) {
     rows[i].style.display = rows[i].cells[0].textContent.toLowerCase().indexOf(query.toLowerCase()) !== -1 ? '' : 'none';
@@ -489,6 +587,15 @@ function renderCustomerView(name, jobs) {
     html += '<button class="btn-comment" onclick="saveComment(' + row + ')">Save Comment</button>';
     html += '<span id="csaved-' + row + '" style="font-size:0.8rem;color:#10b981;margin-left:8px;display:none">Saved</span>';
     html += '<div id="cerr-' + row + '" style="font-size:0.8rem;color:#dc2626;margin-top:4px;display:none"></div>';
+    html += '<div class="followup-section">';
+    html += '<div class="followup-label">If won, will it be a Brookstone awarded project?</div>';
+    html += '<div class="followup-btns">';
+    html += '<button class="btn-followup-yes" onclick="saveFollowUp(' + row + ', \'yes\', \'' + job.replace(/'/g, "\\'") + '\')">Yes</button>';
+    html += '<button class="btn-followup-no" onclick="saveFollowUp(' + row + ', \'no\', \'' + job.replace(/'/g, "\\'") + '\')">No</button>';
+    html += '<button class="btn-followup-unknown" onclick="saveFollowUp(' + row + ', \'unknown\', \'' + job.replace(/'/g, "\\'") + '\')">Unknown</button>';
+    html += '</div>';
+    html += '<div id="fsaved-' + row + '" class="followup-saved">Response saved!</div>';
+    html += '</div>';
     html += '</div>';
     html += '<div class="btn-group">';
     html += '<button class="btn-won"' + (isWon ? ' disabled' : '') + ' onclick="setStatus(' + row + ',\'Won\')">Won</button>';
@@ -515,6 +622,31 @@ function downloadCSV() {
 }
 
 // ─── STATUS / COMMENT: customer saves via Worker ──────────────────────────────
+function saveFollowUp(rowNum, answer, jobName) {
+  var savedEl = document.getElementById('fsaved-' + rowNum);
+  var customerName = '';
+  for (var i = 0; i < allRows.length; i++) {
+    if (allRows[i]._row === rowNum) { customerName = allRows[i][COL_CUSTOMER] || ''; break; }
+  }
+  fetch(WORKER_URL + '/followup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jobName: jobName, customerName: customerName, answer: answer, rowNum: rowNum })
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error);
+      if (savedEl) { savedEl.style.display = 'block'; setTimeout(function() { savedEl.style.display = 'none'; }, 3000); }
+      // If No or Yes, remove the card since it gets archived
+      if (answer === 'yes' || answer === 'no') {
+        var card = document.getElementById('card-' + rowNum);
+        if (card) { card.style.opacity = '0.4'; setTimeout(function() { card.remove(); }, 500); }
+      }
+    })
+    .catch(function(e) {
+      if (savedEl) { savedEl.textContent = 'Error: ' + e.message; savedEl.style.display = 'block'; savedEl.style.color = '#dc2626'; }
+    });
+}
+
 function saveComment(rowNum) {
   var text = document.getElementById('comment-' + rowNum).value;
   var savedEl = document.getElementById('csaved-' + rowNum);
