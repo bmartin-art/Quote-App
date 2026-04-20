@@ -256,11 +256,30 @@ function apiCall(url, options) {
 
 var DRIVE_ID = 'b!E3d4h5FGlUadY7yqQki0Nqn63AIAb55KmC2rGrYdpsLXwRivQZNGT7Bve8fVj3FC';
 var FILE_ID = '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
+var SHAREPOINT_HOST = 'brookstoneind-my.sharepoint.com';
 
 function loadExcel() {
   showStatus('Loading data...', 'info');
-  fileId = FILE_ID;
+  // First try direct file ID, then fall back to searching shared files
   return apiCall('/drives/' + DRIVE_ID + '/items/' + FILE_ID + '/workbook/worksheets/Active/range(address=\'A1:G300\')')
+    .catch(function() {
+      // Fall back to searching shared items
+      return apiCall('/me/drive/sharedWithMe?$select=id,name,remoteItem')
+        .then(function(shared) {
+          var file = null;
+          for (var i = 0; i < shared.value.length; i++) {
+            if (shared.value[i].name && shared.value[i].name.toLowerCase().indexOf('customer quotes') !== -1) {
+              file = shared.value[i];
+              break;
+            }
+          }
+          if (!file) throw new Error('Customer Quotes.xlsx not found. Make sure the file has been shared with you.');
+          var remoteId = file.remoteItem ? file.remoteItem.id : file.id;
+          var remoteDriveId = file.remoteItem && file.remoteItem.parentReference ? file.remoteItem.parentReference.driveId : DRIVE_ID;
+          fileId = remoteId;
+          return apiCall('/drives/' + remoteDriveId + '/items/' + remoteId + '/workbook/worksheets/Active/range(address=\'A1:G300\')');
+        });
+    })
     .then(function(range) {
       var values = range.values;
       if (!values || values.length < 2) throw new Error('No data found in sheet.');
@@ -275,11 +294,14 @@ function loadExcel() {
 }
 
 function updateCell(rowNum, colName, value) {
-  fileId = FILE_ID;
+  var useDriveId = fileId === FILE_ID ? DRIVE_ID : null;
   var colIdx = headers.indexOf(colName);
   if (colIdx === -1) return Promise.reject(new Error('Column not found: ' + colName));
   var colLetter = String.fromCharCode(65 + colIdx);
-  return apiCall('/drives/' + DRIVE_ID + '/items/' + FILE_ID + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')', {
+  var apiPath = useDriveId
+    ? '/drives/' + useDriveId + '/items/' + fileId + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')'
+    : '/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')';
+  return apiCall(apiPath, {
     method: 'PATCH',
     body: JSON.stringify({ values: [[value]] })
   });
