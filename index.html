@@ -255,18 +255,9 @@ function apiCall(url, options) {
 }
 
 function loadExcel() {
-  showStatus('Connecting to OneDrive...', 'info');
-  return apiCall('/me/drive/root/search(q=\'Customer%20Quotes\')?$select=id,name')
-    .then(function(search) {
-      var file = null;
-      for (var i = 0; i < search.value.length; i++) {
-        if (search.value[i].name.toLowerCase().indexOf('customer quotes') !== -1) { file = search.value[i]; break; }
-      }
-      if (!file) throw new Error('Could not find Customer Quotes.xlsx on OneDrive.');
-      fileId = file.id;
-      showStatus('Loading data...', 'info');
-      return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'A1:G300\')');
-    })
+  showStatus('Loading data...', 'info');
+  fileId = '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
+  return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'A1:G300\')')
     .then(function(range) {
       var values = range.values;
       if (!values || values.length < 2) throw new Error('No data found in sheet.');
@@ -281,6 +272,7 @@ function loadExcel() {
 }
 
 function updateCell(rowNum, colName, value) {
+  fileId = fileId || '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
   var colIdx = headers.indexOf(colName);
   if (colIdx === -1) return Promise.reject(new Error('Column not found: ' + colName));
   var colLetter = String.fromCharCode(65 + colIdx);
