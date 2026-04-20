@@ -254,10 +254,13 @@ function apiCall(url, options) {
   });
 }
 
+var DRIVE_ID = 'b!E3d4h5FGlUadY7yqQki0Nqn63AIAb55KmC2rGrYdpsLXwRivQZNGT7Bve8fVj3FC';
+var FILE_ID = '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
+
 function loadExcel() {
   showStatus('Loading data...', 'info');
-  fileId = '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
-  return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'A1:G300\')')
+  fileId = FILE_ID;
+  return apiCall('/drives/' + DRIVE_ID + '/items/' + FILE_ID + '/workbook/worksheets/Active/range(address=\'A1:G300\')')
     .then(function(range) {
       var values = range.values;
       if (!values || values.length < 2) throw new Error('No data found in sheet.');
@@ -272,11 +275,11 @@ function loadExcel() {
 }
 
 function updateCell(rowNum, colName, value) {
-  fileId = fileId || '01MQSTTNUKGBEMZTQKWBBLHQDYZK5W3OCI';
+  fileId = FILE_ID;
   var colIdx = headers.indexOf(colName);
   if (colIdx === -1) return Promise.reject(new Error('Column not found: ' + colName));
   var colLetter = String.fromCharCode(65 + colIdx);
-  return apiCall('/me/drive/items/' + fileId + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')', {
+  return apiCall('/drives/' + DRIVE_ID + '/items/' + FILE_ID + '/workbook/worksheets/Active/range(address=\'' + colLetter + rowNum + '\')', {
     method: 'PATCH',
     body: JSON.stringify({ values: [[value]] })
   });
