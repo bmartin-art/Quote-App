@@ -581,12 +581,23 @@ function dismissFollowUp(row, btn) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ row: row })
-  }).then(function() {
-    var card = btn.closest('.followup-card');
-    card.style.opacity = '0.4';
-    card.style.pointerEvents = 'none';
-    setTimeout(function() { card.remove(); }, 400);
-  });
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        var card = btn.closest('.followup-card');
+        card.style.opacity = '0.4';
+        card.style.pointerEvents = 'none';
+        setTimeout(function() { card.remove(); }, 400);
+      } else {
+        btn.textContent = 'Error';
+        console.log('Dismiss failed:', data);
+      }
+    })
+    .catch(function(e) {
+      btn.textContent = 'Failed';
+      btn.disabled = false;
+      console.log('Dismiss error:', e.message);
+    });
 }
 
 function filterTable(query) {
