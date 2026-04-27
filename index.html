@@ -587,16 +587,20 @@ function dismissFollowUp(row, btn) {
         var card = btn.closest('.followup-card');
         card.style.opacity = '0.4';
         card.style.pointerEvents = 'none';
-        setTimeout(function() { card.remove(); }, 400);
+        setTimeout(function() { 
+          card.remove();
+          // Reset cache so next open reloads fresh data
+          var content = document.getElementById('followups-content');
+          if (content) content.dataset.loaded = '';
+        }, 400);
       } else {
         btn.textContent = 'Error';
-        console.log('Dismiss failed:', data);
+        btn.disabled = false;
       }
     })
     .catch(function(e) {
       btn.textContent = 'Failed';
       btn.disabled = false;
-      console.log('Dismiss error:', e.message);
     });
 }
 
