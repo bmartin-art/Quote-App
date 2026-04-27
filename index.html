@@ -154,8 +154,14 @@ textarea:focus { outline: none; border-color: #1a2f6e; }
     <h3>The Brookstone Brief</h3>
     <button class="brief-close" onclick="toggleBrief()">&#x2715;</button>
   </div>
-  <div class="brief-content" id="briefContent">
-    <div style="color:#6b7280;font-size:0.85rem;padding:20px">Loading...</div>
+  <div class="brief-content">
+    <div class="brief-issue">Updated monthly</div>
+    <div class="brief-title">The Brookstone Brief</div>
+    <div class="brief-tagline">Monthly Market Intelligence for the Trades</div>
+    <div class="brief-section">
+      <p>Stay up to date with the latest market conditions, material prices, and construction outlook from the Brookstone team.</p>
+    </div>
+    <button class="brief-open-btn" onclick="window.open('https://www.brookstoneind.com/brookstonebrief','_blank')">Read The Brookstone Brief</button>
   </div>
 </div>
     <button class="btn-signout" id="signoutBtn" style="display:none" onclick="signOut()">Lock</button>
@@ -784,35 +790,6 @@ function setStatus(rowNum, status) {
 function toggleBrief() {
   document.getElementById('briefPanel').classList.toggle('open');
   document.getElementById('oppsPanel').classList.remove('open');
-  if (document.getElementById('briefPanel').classList.contains('open')) {
-    loadBrief();
-  }
-}
-
-function loadBrief() {
-  var content = document.getElementById('briefContent');
-  if (!content || content.dataset.loaded) return;
-  fetch(WORKER_URL + '/brief')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var html = '';
-      html += '<div class="brief-issue">Updated ' + (data.cachedAt || '') + '</div>';
-      html += '<div class="brief-title">' + (data.title || 'The Brookstone Brief') + '</div>';
-      html += '<div class="brief-tagline">Monthly Market Intelligence for the Trades</div>';
-      if (data.bullets && data.bullets.length) {
-        html += '<div class="brief-section">';
-        data.bullets.forEach(function(b) {
-          html += '<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:#1a2f6e;font-weight:700;flex-shrink:0">•</span><span style="font-size:0.85rem;color:#374151;line-height:1.5">' + b + '</span></div>';
-        });
-        html += '</div>';
-      }
-      html += '<button class="brief-open-btn" onclick="window.open(\'' + data.url + '\',\'_blank\')">Read Full Newsletter</button>';
-      content.innerHTML = html;
-      content.dataset.loaded = '1';
-    })
-    .catch(function() {
-      content.innerHTML = '<p style="font-size:0.85rem;color:#6b7280;margin-bottom:16px">Click below to read the latest Brookstone Brief.</p><button class="brief-open-btn" onclick="window.open(\'https://www.brookstoneind.com/brookstonebrief\',\'_blank\')">Read The Brookstone Brief</button>';
-    });
 }
 
 function toggleOpps() {
