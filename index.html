@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Customer Quotes</title>
-<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 30px 16px; }
@@ -185,13 +184,6 @@ var COL_COMMENT = 'Comment';
 var COL_ID = 'CustomerID';
 var COL_UPDATED = 'Last Updated';
 
-// ─── MSAL (admin only) ────────────────────────────────────────────────────────
-var msalConfig = {
-  auth: { clientId: CLIENT_ID, authority: 'https://login.microsoftonline.com/common', redirectUri: APP_URL }
-};
-var msalInstance = new msal.PublicClientApplication(msalConfig);
-var scopes = ['Files.ReadWrite', 'User.Read'];
-
 // ─── STATE ────────────────────────────────────────────────────────────────────
 var fileId = null;
 var allRows = [];
@@ -315,11 +307,11 @@ function workerGet(customerId) {
     });
 }
 
-function workerUpdate(rowNum, colName, value, jobName) {
+function workerUpdate(rowNum, colName, value, jobName, customerName) {
   return fetch(WORKER_URL + '/update', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ rowNum: rowNum, colName: colName, value: value, jobName: jobName || '' })
+    body: JSON.stringify({ rowNum: rowNum, colName: colName, value: value, jobName: jobName || '', customerName: customerName || '' })
   }).then(function(res) { return res.json(); })
     .then(function(data) { if (data.error) throw new Error(data.error); return data; });
 }
@@ -735,7 +727,12 @@ function saveComment(rowNum) {
   var savedEl = document.getElementById('csaved-' + rowNum);
   var errorEl = document.getElementById('cerr-' + rowNum);
   errorEl.style.display = 'none';
-  workerUpdate(rowNum, COL_COMMENT, text).then(function() {
+  var jobName = '';
+  var customerName = '';
+  for (var i = 0; i < allRows.length; i++) {
+    if (allRows[i]._row === rowNum) { jobName = allRows[i][COL_JOB] || ''; customerName = allRows[i][COL_CUSTOMER] || ''; break; }
+  }
+  workerUpdate(rowNum, COL_COMMENT, text, jobName, customerName).then(function() {
     for (var i = 0; i < allRows.length; i++) {
       if (allRows[i]._row === rowNum) { allRows[i][COL_COMMENT] = text; break; }
     }
@@ -755,10 +752,11 @@ function setStatus(rowNum, status) {
   saving.style.color = '#6b7280';
   var now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   var jobName = '';
+  var customerName = '';
   for (var i = 0; i < allRows.length; i++) {
-    if (allRows[i]._row === rowNum) { jobName = allRows[i][COL_JOB] || ''; break; }
+    if (allRows[i]._row === rowNum) { jobName = allRows[i][COL_JOB] || ''; customerName = allRows[i][COL_CUSTOMER] || ''; break; }
   }
-  workerUpdate(rowNum, COL_STATUS, status, jobName).then(function() {
+  workerUpdate(rowNum, COL_STATUS, status, jobName, customerName).then(function() {
     return workerUpdate(rowNum, COL_UPDATED, now);
   }).then(function() {
     for (var i = 0; i < allRows.length; i++) {
